@@ -125,7 +125,7 @@ void SGLGraph<T>::addEdge(const T &p_s1, const T &p_s2) {
 	} catch (const logic_error &le) {
 		throw logic_error("addEdge: one of the vertices isn't in the graph");
 	}
-	m_nodes[index_s1]->m_neighbors.push_back(m_nodes[index_s2]);
+	m_nodes[index_s1]->m_neighbors.push_back(m_nodes[index_s2]->m_data);
 }
 
 
@@ -144,6 +144,9 @@ void SGLGraph<T>::deleteEdge(const T &p_s1, const T &p_s2) {
 		index_s2 = _index(p_s2);
 	} catch (const logic_error &le) {
 		throw logic_error("deleteEdge: one of the vertices isn't in the graph");
+	}
+	if (!hasEdge(p_s1, p_s2)) {
+		throw logic_error("deleteEdge: no edge between the two vertices");
 	}
 	m_nodes[index_s1]->m_neighbors.remove(m_nodes[index_s2]->m_data);
 }
@@ -335,11 +338,11 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s,
 		if (pos == index_v) {
 			// if we find the node of the given vertex, we add to the vector
 			// all the vertices it points to, after having checked they're not already in it
-			for (typename list<T>::const_iterator node = cur->m_neighbors.begin();
-					node != cur->m_neighbors.end(); ++node) {
-				if (std::find(adjs.begin(), adjs.end(), m_nodes[pos]->m_data)
+			for (typename list<T>::const_iterator vert = cur->m_neighbors.begin();
+					vert != cur->m_neighbors.end(); ++vert) {
+				if (std::find(adjs.begin(), adjs.end(), (*vert))
 						== adjs.end()) {
-					adjs.push_back(m_nodes[pos]->m_data);
+					adjs.push_back((*vert));
 				}
 			}
 		} else {
@@ -353,6 +356,9 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s,
 				}
 			}
 		}
+	}
+	if (p_closed) {
+		adjs.push_back(p_s);
 	}
 	return adjs;
 }
@@ -373,9 +379,9 @@ void SGLGraph<T>::display() const {
 		Node *cur = m_nodes[pos];
 
 		cout << "Vertex: " << cur->m_data << endl;
-		cout << "Source of " << cur->m_neighbors.size() << " edges:" << endl;
+		cout << "Source of " << cur->m_neighbors.size() << " edges to vertices:" << endl;
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
-				v != cur->m_neighbors->end(); ++v) {
+				v != cur->m_neighbors.end(); ++v) {
 			cout << (*v);
 			cout << endl;
 		}
@@ -390,15 +396,15 @@ void SGLGraph<T>::display() const {
 
 template<typename T>
 void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
-	for (unsigned int pos = 0; pos < p_src.size(); pos++) {
+	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
 		addVertex(p_src.m_nodes[pos]->m_data);
 	}
-	for (unsigned int pos = 0; pos < p_src.size(); pos++) {
+	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
 		Node *cur = p_src.m_nodes[pos];
 
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
-				v != cur->m_neighbors->end(); ++v) {
-			addEdge(p_src.m_nodes[pos]->m_data, (*v)->m_data);
+				v != cur->m_neighbors.end(); ++v) {
+			addEdge(p_src.m_nodes[pos]->m_data, (*v));
 		}
 	}
 }
