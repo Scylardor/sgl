@@ -30,6 +30,7 @@ SGLGraph<T>::SGLGraph() {
  *  \brief Copy constructor
  *
  *  \pre Enough memory available
+ *  \param[in] p_src the graph to copy
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
@@ -38,7 +39,10 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
 }
 
 /**
- *  \brief Constructor of a sub-graph of the original, using a filter vector
+ * \brief Constructor of a sub-graph of the original, using a filter vector
+ * i.e. only the vertices contained in the vector will be copied
+ * \param[in] p_src the graph to copy
+ * \param[in] p_filter the vector containing the vertices to copy
  * \pre Enough memory available
  * \pre All the vertices in the filter vector must be in the source graph
  * \post a deep copy of the graph is obtained, with only the vertices contained in the filter vector
@@ -46,12 +50,11 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
  * \exception logic_error if a vertex in filter vector isn't contained in the source graph
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const vector<T> &p_filter) {
+SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { // the std:: explicitation is for Doxygen to recognize the function
 	for (typename vector<T>::const_iterator vertex = p_filter.begin();
 			vertex != p_filter.end(); ++vertex) {
 		if (!p_src.hasVertex((*vertex))) {
-			throw logic_error(
-					"SGLGraph: a filter vector's vertex isn't in the source graph");
+			throw logic_error("SGLGraph: a filter vector's vertex isn't in the source graph");
 		}
 		addVertex((*vertex));
 	}
@@ -68,11 +71,12 @@ SGLGraph<T>::~SGLGraph() {
 }
 
 /**
- * \brief Assignment operator overloading
- *
+ * \brief Assignment operator overloading: deep copy of a graph
+ * \param[in] p_src the graph to copy
  * \pre Enough memory available
  * \post A deep copy is returned
  * \exception bad_alloc in case of insufficient memory
+ * \return the current graph returns itself
  */
 template<typename T>
 const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
@@ -83,8 +87,8 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
 }
 
 /**
- *  \brief Adds a vertex to the graph
- *
+ * \brief Adds a vertex to the graph
+ * \param[in] p_s the new element to put in the graph
  * \pre Enough memory available
  * \pre The vertex isn't already in the graph
  * \post The graph counts one more vertex
@@ -102,8 +106,9 @@ void SGLGraph<T>::addVertex(const T &p_s) {
 }
 
 /**
- *  \brief Adds an edge in the graph
- *
+ * \brief Adds an edge in the graph
+ * \param[in] p_s1 the source vertex of the edge
+ * \param[in] p_s2 the destination vertex of the edge
  * \pre Enough memory available
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph counts one more edge
@@ -123,8 +128,9 @@ void SGLGraph<T>::addEdge(const T &p_s1, const T &p_s2) {
 }
 
 /**
- *  \brief Deletes an edge in the graph
- *
+ * \brief Deletes an edge in the graph
+ * \param[in] p_s1 the source vertex of the edge
+ * \param[in] p_s2 the destination vertex of the edge
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph counts one less edge
  * \exception logic_error if one of the two vertices isn't in the graph
@@ -145,8 +151,8 @@ void SGLGraph<T>::deleteEdge(const T &p_s1, const T &p_s2) {
 }
 
 /**
- *  \brief deletes a vertex from the graph
- *
+ * \brief deletes a vertex from the graph
+ * \param[in] p_s The element we want to delete the vertex of
  * \pre The vertex is in the graph
  * \post The graph counts one less vertex
  * \exception logic_error if the vertex isn't in the graph
@@ -168,9 +174,10 @@ void SGLGraph<T>::deleteVertex(const T &p_s) {
 }
 
 /**
- *  \brief verifies that a vertex is in the graph
- *
+ * \brief verifies that a vertex is in the graph
+ * \param[in] p_s the element we search the vertex of
  * \post The graph remains unchanged
+ * \return whether the graph contains this vertex or not
  */
 template<typename T>
 bool SGLGraph<T>::hasVertex(const T &p_s) const {
@@ -186,9 +193,12 @@ bool SGLGraph<T>::hasVertex(const T &p_s) const {
 
 /**
  * \brief verifies that an edge is in the graph
+ * \param[in] p_s1 the source vertex of the edge
+ * \param[in] p_s2 the destination vertex of the edge
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph remains unchanged
  * \exception logic_error if one of the two vertices isn't in the graph
+ * \return whether the graph contains this edge or not
  */
 template<typename T>
 bool SGLGraph<T>::hasEdge(const T &p_s1, const T &p_s2) const {
@@ -210,9 +220,9 @@ bool SGLGraph<T>::hasEdge(const T &p_s1, const T &p_s2) const {
 }
 
 /**
- *  \brief Returns the number of vertices in the graph
- *
+ * \brief Returns the number of vertices in the graph
  * \post The graph remains unchanged
+ * \return the number of vertices in the graph
  */
 template<typename T>
 unsigned int SGLGraph<T>::order() const {
@@ -220,9 +230,9 @@ unsigned int SGLGraph<T>::order() const {
 }
 
 /**
- *  \brief Returns the number of edges in the graph
- *
+ * \brief Returns the number of edges in the graph
  * \post The graph remains unchanged
+ * \return the number of edges in the graph
  */
 template<typename T>
 unsigned int SGLGraph<T>::size() const {
@@ -235,12 +245,12 @@ unsigned int SGLGraph<T>::size() const {
 }
 
 /**
- *  \brief Lists all the vertices in the graph
- *
+ * \brief Lists all the vertices in the graph
  * Returns in a vector all the vertices of the graph
  * \pre Enough memory available
  * \post A vector of all the vertices data is returned
  * \exception bad_alloc in case of insufficient memory
+ * \return a vector containing all the vertices of the graph
  */
 template<typename T>
 std::vector<T> SGLGraph<T>::vertices() const {
@@ -254,14 +264,14 @@ std::vector<T> SGLGraph<T>::vertices() const {
 }
 
 /**
- *  \brief Returns the in-degree of a vertex in the graph
- *  i.e. the number of neighbor vertices of this vertex which have an edge that
- *  goes to it.
- *
+ * \brief Returns the in-degree of a vertex in the graph
+ * i.e. the number of neighbor vertices of this vertex which have an edge that
+ * goes to it.
+ * \param[in] p_v the vertex we want to know the in-degree of
  * \pre The vertex has to be in the graph
  * \post The graph remains unchanged
  * \exception logic_error if the vertex isn't in the graph
- * \return the in-degree of a vertex in the graph
+ * \return the number of edges to other vertices the vertex is the destination of
  */
 template<typename T>
 unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
@@ -281,10 +291,11 @@ unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
 /**
  *  \brief Returns the out-degree of a vertex in the graph,
  *  i.e. the number of edges with other vertices it is the source of.
- *
+ * \param[in] p_v the vertex we want to know the out-degree of
  * \pre The vertex must be in the graph
  * \post The graph remains unchanged
  * \exception logic_error if the vertex isn't in the graph
+ * \return the number of edges to other vertices the vertex is the source of
  */
 template<typename T>
 unsigned int SGLGraph<T>::vertexOutDegree(const T &p_s) const {
@@ -298,7 +309,8 @@ unsigned int SGLGraph<T>::vertexOutDegree(const T &p_s) const {
  *  \brief Lists the adjacent vertices of a vertex in the graph.
  *  If closed boolean is set to true, the vertex itself will be included in the returned neighborhood,
  *  making it a closed neighborhood (as opposed to the open version, without it included).
- *
+ * \param[in] p_s the vertex we want the neighborhood of
+ * \param[in] p_closed boolean to say whether we want the closed neighborhood of the vertex or not (false by default)
  * \pre Enough memory available
  * \pre The vertex has to be in the graph
  * \post The graph remains unchanged
@@ -307,8 +319,7 @@ unsigned int SGLGraph<T>::vertexOutDegree(const T &p_s) const {
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s,
-		bool p_closed) const {
+std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s, bool p_closed) const {
 	if (!hasVertex(p_s)) {
 		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
 	}
@@ -348,12 +359,11 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s,
 }
 
 /**
- *  \brief Displays a representation of the graph
- *  \pre The type contained by the graph must have declared an overloading of the << operator for ostreams
+ * \brief Displays a representation of the graph
+ * \pre The type contained by the graph must have declared an overloading of the << operator for ostreams
  *  	 in order to be printed out by the function
  * \post The graph remains unchanged
  */
-
 template<typename T>
 void SGLGraph<T>::display() const {
 	cout << "Number of vertices: " << order() << endl;
@@ -379,6 +389,14 @@ void SGLGraph<T>::display() const {
 		cout << "Empty graph" << endl;
 }
 
+/**
+ * \brief Lists all the edges in the graph
+ * Returns all the edges under the form of a vector of pair of elements (source, destination)
+ * \pre Enough memory available
+ * \post A vector of all the edges is returned
+ * \exception bad_alloc in case of insufficient memory
+ * \return A vector of pairs of elements organized as (source, destination)
+ */
 template<typename T>
 vector<pair<T, T> > SGLGraph<T>::edges() const {
 	vector<pair<T, T> > edges;
@@ -393,6 +411,14 @@ vector<pair<T, T> > SGLGraph<T>::edges() const {
 	return edges;
 }
 
+
+/**
+ * \brief Private function used by a copy constructor to copy the adjacency list of another graph
+ * \pre Enough memory available
+ * \param[in] p_src the source graph
+ * \post The contents of the source graph (vertices and edges) are fully copied
+ * \exception bad_alloc in case of insufficient memory
+ */
 template<typename T>
 void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
 	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
@@ -408,6 +434,13 @@ void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
 	}
 }
 
+/**
+ * \brief Private function used to retrieve the index in the intern adjacency list of an element
+ * \pre The vertex is in the graph
+ * \param[in] p_v the vertex to search
+ * \exception logic_error the vertex isn't in the graph
+ * \return the index in the adjacency list of the given vertex's node
+ */
 template<typename T>
 int SGLGraph<T>::_index(const T &p_v) const {
 	int index = -1;

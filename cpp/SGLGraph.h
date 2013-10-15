@@ -100,7 +100,7 @@ private:
 	class Node {
 	public:
 		T m_data; /*!< data of a vertex */
-		std::list<T> m_neighbors; /*!< this list contains all the neighbors nodes' indexes of the vertex */
+		std::list<T> m_neighbors; /*!< this list contains all the data of all vertex's neighbors */
 
 		Node(const T& p_data) : m_data(p_data) {}
 	};
