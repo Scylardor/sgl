@@ -1,12 +1,12 @@
 
 /**
  * \file Comparable.h
- * \brief Définition de la classe Comparable
+ * \brief Definition of class Comparable
  * \author Abder
  * \version 0.1
- * \date mars 2011
+ * \date March, 2011
  *
- * Une classe pour tester les implantations génériques. 
+ * A class to test generic implementation.
   */
 
 #ifndef _COMPARABLE_H
@@ -16,129 +16,122 @@
 #include <string>
 
 /** 
-* \class ClassTests
+* \class Comparable
 *
-* \brief classe de testes avec des opérateurs surchargés
+* \brief test class with overloaded operators
 *
-*  La classe nous servira tout le long de la session
-*  pour tester nos différentes implantations génériques.
+*  Useful to test generic implementations.
 */
 class Comparable
 {
 public:
 	/**
-     *  \brief Constructeur par défaut
-     *
-     *  \post Une instance de la classe non initialisée 
+     *  \brief Default constructor
      */
 	Comparable();
 
 	/**
-     *  \brief Constructeur avec arguments
-     *
-     *  \post Une instance de la classe initialisée 
+     *  \brief Constructor with arguments
      */
 	Comparable(int V, const std::string & M);
 
 	/**
-     *  \brief Constructeur de copie
+     *  \brief Copy Constructor
 	 *
-	 *  \post une copie profonde de l'objet source   
+	 *  \post deep copy of the source object
      */
 	Comparable(const Comparable  & A);  
 	
 	/**
-     *  \brief Destructeur
-     *
-     *  \post l'instance de la classe est détruite
+     *  \brief Destructor
      */
 	~Comparable();
 
 	/**
-     *  \brief Retourner le membre Valeur
+     *  \brief Return the Value member
      *
-     *  \post un entier est retourné
+     *  \return an integer
      */
-	int RetourneValeur() { return Valeur; }
+	int ReturnValue() { return Value; }
 
 	/**
-     *  \brief Retourner le membre Mot
+     *  \brief Return the string Word
      *
-     *  \post une chaîne de caractères est retournée
+     *  \return a string
      */
-	std::string RetourneMot() { return Mot; }
+	std::string ReturnWord() { return Word; }
 
 	/**                       
-	 * \brief Surcharger l'opérateur < 
+	 * \brief Overload of operator <
 	 *
-	 * \post Un booléen est retournée 
+	 * \return (boolean) true if Value < Op2.Value
 	 */
-	bool operator<  (const Comparable &Op2) const {return Valeur < Op2.Valeur;}
+	bool operator<  (const Comparable &Op2) const {return Value < Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur <= 
+	 * \brief Overload of operator <=
 	 *
-	 * \post Un booléen est retournée
+	 * \return (boolean) true if Value <= Op2.Value
 	 */
-	bool operator<= (const Comparable &Op2) const {return Valeur <= Op2.Valeur;}
+	bool operator<= (const Comparable &Op2) const {return Value <= Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur > 
+	 * \brief Overload of operator >
 	 *
-	 * \post Un booléen est retournée
+	 * \return (boolean) true if Value > Op2.Value
 	 */
-	bool operator>  (const Comparable &Op2) const {return Valeur > Op2.Valeur;}
+	bool operator>  (const Comparable &Op2) const {return Value > Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur >= 
+	 * \brief Overload of operator >=
 	 *
-	 * \post Un booléen est retournée
+	 * \return (boolean) true if Value >= Op2.Value
 	 */
-	bool operator>= (const Comparable &Op2) const {return Valeur >= Op2.Valeur;}
+	bool operator>= (const Comparable &Op2) const {return Value >= Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur != 
+	 * \brief Overload operator !=
 	 *
-	 * \post Un booléen est retournée 
+	 * \return (boolean) true if Value != Op2.Value
 	 */
-	bool operator!= (const Comparable &Op2) const {return Valeur != Op2.Valeur;}
+	bool operator!= (const Comparable &Op2) const {return Value != Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur == 
+	 * \brief Overload operator ==
 	 *
-	 * \post Un booléen est retournée 
+	 * \return (boolean) true if Value == Op2.Value
 	 */
-	bool operator== (const Comparable &Op2) const {return Valeur == Op2.Valeur;}
+	bool operator== (const Comparable &Op2) const {return Value == Op2.Value;}
 
 	/**                       
-	 * \brief Surcharger l'opérateur = 
+	 * \brief Overload operator =
 	 *
-	 * Copie l'operande de droite dans l'objet courant
+	 * Copies the right-hand side object's value into this one
 	 *
-	 * \post Une copie profonde de la source est retournée 
+	 * \return a deep copy of the source
 	 */
 	Comparable & operator= (const Comparable &);
 
 	/**                       
-	 * \brief Surcharger l'opérateur + 
+	 * \brief Overload operator +
 	 *
-	 * Additionne deux objets Comparable
+	 * Adds two Comparable objects
 	 *
-	 * \post Une instance de type Comparable somme de 2 objets Comparable 
+	 * \return A new instance of type Comparable which sums the 2 objects
 	 */
 	Comparable operator+ (const Comparable &) const ;
 
 	/**                       
-	 * \brief Surcharge de l'opérateur << 
+	 * \brief Overload operator <<
 	 *
-	 *	Affiche le contenu de l'objet a l'ecran
-	 * \post Un flot de sortie correspondant à l'objet de type Comparable est retournée 
+	 *	Prints the object's content to screen
+	 * \return the used ostream
 	 */
 	friend std::ostream & operator<< (std::ostream &,const Comparable &);
 
 private:
-	int Valeur;						/*!< Un entier*/
-	std::string Mot;				/*!<Une chaîne de caractères*/
+	int Value;						/*!< An int */
+	std::string Word;				/*!< A string */
 
 };
 

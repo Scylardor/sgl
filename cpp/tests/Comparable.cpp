@@ -1,10 +1,10 @@
 
 /**
  * \file Comparable.cpp
- * \brief Le code des méthodes membres de la classe Comparable.
+ * \brief Code of class Comparable
  * \author Abder
  * \version 0.1
- * \date mars 2011
+ * \date March, 2011
  */
 
 #include <iostream>
@@ -18,29 +18,30 @@
  * \fn Comparable:: Comparable()
  */
 Comparable:: Comparable()
+: Value(0), Word("")
 {}
 
 /**
  * \fn Comparable:: Comparable(int V, const std::string & M) 
  *
- * \param[in] V Un entier 
- * \param[in] M Une chaîne de caractères
+ * \param[in] V An int
+ * \param[in] M A string
  */
 Comparable:: Comparable(int V, const std::string& M) 
 { 
-	Valeur = V; 
-	Mot = M;
+	Value = V;
+	Word = M;
 }
 
 /**
  * \fn Comparable:: Comparable(const Comparable & Source)
  *
- * \param[in] Source  La source de la copie
+ * \param[in] Source Copy source
  */
 Comparable:: Comparable(const Comparable & Source)
 {
-	Valeur = Source.Valeur;
-	Mot = Source.Mot;
+	Value = Source.Value;
+	Word = Source.Word;
 }
 
 /**
@@ -52,42 +53,42 @@ Comparable::~Comparable()
  /**
  * \fn Comparable & Comparable::operator=(const Comparable &Op2)
  *
- * \param[in] Op2 Le second operande de l'operation
- * \return Comparable- L'objet courant
+ * \param[in] Op2 Right-hand side operand
+ * \return Comparable - this object
  */
 Comparable & Comparable::operator=(const Comparable &Op2)
 {
-	Valeur = Op2.Valeur;
-	Mot = Op2.Mot;
+	Value = Op2.Value;
+	Word = Op2.Word;
 	return *this;
 }
 
 /**
  * \fn Comparable Comparable::operator+ (const Comparable &Op2)
  *
- * \param[in] Op2 Le second operande de l'addition
- * \return Comparable- L'objet courant
+ * \param[in] Op2 Right-hand side operand
+ * \return Comparable- this object
  */
 Comparable Comparable::operator+ (const Comparable &Op2)const
 {
 	Comparable Temp;
-	Temp.Valeur = Valeur +Op2.Valeur;
-	Temp.Mot = Mot;
-	Temp.Mot = Temp.Mot + Op2.Mot;
+	Temp.Value = Value +Op2.Value;
+	Temp.Word = Word;
+	Temp.Word = Temp.Word + Op2.Word;
 	return(Temp);
 }
 
 /**
- * \fn std::ostream & operator<< (std::ostream &sortie, const Comparable &Source)
+ * \fn std::ostream & operator<< (std::ostream &out, const Comparable &Source)
  *
- * \param[in, out] sortie Le flot de sortie
- * \param[in] Source Objet de Comparable a afficher
- * \return ostream  L'identificateur de flot de sortie
+ * \param[in, out] sortie the out stream
+ * \param[in] Source Comparable object to print
+ * \return ostream  the out stream
  */
 std::ostream & operator<< (std::ostream &sortie, const Comparable &Source)
 {
-	sortie<<"Valeur->"<<std::setw(5)<<std::setiosflags(std::ios::left)<<Source.Valeur
-		  <<" Mot->"<<Source.Mot<<std::endl;
+	sortie<<"Value->"<<std::setw(5)<<std::setiosflags(std::ios::left)<<Source.Value
+		  <<" Word->"<<Source.Word<<std::endl;
 	return sortie;
 }
 
