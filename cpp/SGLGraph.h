@@ -33,38 +33,67 @@ class SGLGraph {
 public:
 	// Constructors
 	explicit SGLGraph();
-	SGLGraph(const SGLGraph&);
-	SGLGraph(const SGLGraph&, const std::vector<T>&);
+	SGLGraph(const SGLGraph& p_src);
+	SGLGraph(const SGLGraph& p_src, const std::vector<T>& p_filter);
 	// Destructor
 	~SGLGraph();
 	// Operator =
-	const SGLGraph& operator =(const SGLGraph&);
+	const SGLGraph& operator =(const SGLGraph &p_src);
 
-	// Vertices related operations
-	void			addVertex(const T &);
-	void			deleteVertex(const T &);
+	// Getters (const)
+	/**
+	 * \brief Tells whether the vertex is a source or not
+	 * i.e. if it has no edges coming to it (in-degree = 0)
+	 * \post The graph remains unchanged
+	 * \return (boolean) whether the vertex is a source or not
+	 */
+	inline bool vertexIsSource(const T &p_v) const {
+		return (vertexInDegree(p_v) == 0);
+	}
+
+	/**
+	 * \brief Tells whether the vertex is a sink or not
+	 * i.e. if it has no edges starting from it (out-degree = 0)
+	 * \post The graph remains unchanged
+	 * \return (boolean) whether the vertex is a sink or not
+	 */
+	inline bool vertexIsSink(const T &p_v) const {
+		return (vertexOutDegree(p_v) == 0);
+	}
+
+	/**
+	 * \brief Returns the number of vertices in the graph
+	 * \post The graph remains unchanged
+	 * \return the number of vertices in the graph
+	 */
+	inline unsigned int order() const {
+		return m_nodes.size();
+	}
+
 	bool			hasVertex(const T &) const;
 	unsigned int	vertexInDegree(const T &) const;
 	unsigned int	vertexOutDegree(const T &) const;
-	inline bool		vertexIsSource(const T &p_v) const {
-		return (vertexInDegree(p_v) == 0);
-	}
-	inline bool		vertexIsSink(const T &p_v) const {
-		return (vertexOutDegree(p_v) == 0);
-	}
 	std::vector<T>	vertexNeighborhood(const T&, bool p_closed = false) const;
-	std::vector<T>	vertices() const;
-
-	// Edges related operations
-	void			addEdge(const T&, const T&);
-	void			deleteEdge(const T&, const T&);
 	bool			hasEdge(const T &, const T &) const;
-	unsigned int	order() const;
 	unsigned int	size() const;
+	std::vector<T>	vertices() const;
 	std::vector<std::pair<T, T> > edges() const;
 
-	// Other
+	// Setters (mutators)
+	void			addVertex(const T &);
+	void			deleteVertex(const T &);
+	void			addEdge(const T&, const T&);
+	void			deleteEdge(const T&, const T&);
+
+	// Others
 	void	display() const;
+	/**
+	 * \brief Static member function to check the structural equality of two graphs
+	 * i.e. same vertices, and same edges
+	 * \param[in] p_g1 the first graph
+	 * \param[in] p_g2 the second graph
+	 * \return whether the two graphs are structurally equal or not
+	 */
 	static bool	areEqual(const SGLGraph &p_g1, const SGLGraph &p_g2) {
 		bool areEqual = true;
 

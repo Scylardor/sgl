@@ -50,7 +50,7 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
  * \exception logic_error if a vertex in filter vector isn't contained in the source graph
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { // the std:: explicitation is for Doxygen to recognize the function
+SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
 	for (typename vector<T>::const_iterator vertex = p_filter.begin();
 			vertex != p_filter.end(); ++vertex) {
 		if (!p_src.hasVertex((*vertex))) {
@@ -220,16 +220,6 @@ bool SGLGraph<T>::hasEdge(const T &p_s1, const T &p_s2) const {
 }
 
 /**
- * \brief Returns the number of vertices in the graph
- * \post The graph remains unchanged
- * \return the number of vertices in the graph
- */
-template<typename T>
-unsigned int SGLGraph<T>::order() const {
-	return m_nodes.size();
-}
-
-/**
  * \brief Returns the number of edges in the graph
  * \post The graph remains unchanged
  * \return the number of edges in the graph
@@ -390,7 +380,7 @@ void SGLGraph<T>::display() const {
 }
 
 /**
- * \brief Lists all the edges in the graph
+ * \brief Lists all the edges in the graph.
  * Returns all the edges under the form of a vector of pair of elements (source, destination)
  * \pre Enough memory available
  * \post A vector of all the edges is returned
