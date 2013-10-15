@@ -26,7 +26,6 @@ template<typename T>
 SGLGraph<T>::SGLGraph() {
 }
 
-
 /**
  *  \brief Copy constructor
  *
@@ -37,7 +36,6 @@ template<typename T>
 SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
 	_copyAdjacencyList(p_src);
 }
-
 
 /**
  *  \brief Constructor of a sub-graph of the original, using a filter vector
@@ -59,7 +57,6 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const vector<T> &p_filter) {
 	}
 }
 
-
 /**
  *  \brief Destructor
  */
@@ -69,7 +66,6 @@ SGLGraph<T>::~SGLGraph() {
 		delete m_nodes[pos];
 	}
 }
-
 
 /**
  * \brief Assignment operator overloading
@@ -85,7 +81,6 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
 	std::swap(m_nodes, temp.m_nodes);
 	return *this;
 }
-
 
 /**
  *  \brief Adds a vertex to the graph
@@ -105,7 +100,6 @@ void SGLGraph<T>::addVertex(const T &p_s) {
 
 	m_nodes.push_back(newv);
 }
-
 
 /**
  *  \brief Adds an edge in the graph
@@ -128,7 +122,6 @@ void SGLGraph<T>::addEdge(const T &p_s1, const T &p_s2) {
 	m_nodes[index_s1]->m_neighbors.push_back(m_nodes[index_s2]->m_data);
 }
 
-
 /**
  *  \brief Deletes an edge in the graph
  *
@@ -150,7 +143,6 @@ void SGLGraph<T>::deleteEdge(const T &p_s1, const T &p_s2) {
 	}
 	m_nodes[index_s1]->m_neighbors.remove(m_nodes[index_s2]->m_data);
 }
-
 
 /**
  *  \brief deletes a vertex from the graph
@@ -175,7 +167,6 @@ void SGLGraph<T>::deleteVertex(const T &p_s) {
 	m_nodes.erase(m_nodes.begin() + index_s);
 }
 
-
 /**
  *  \brief verifies that a vertex is in the graph
  *
@@ -192,7 +183,6 @@ bool SGLGraph<T>::hasVertex(const T &p_s) const {
 	}
 	return isHere;
 }
-
 
 /**
  * \brief verifies that an edge is in the graph
@@ -219,7 +209,6 @@ bool SGLGraph<T>::hasEdge(const T &p_s1, const T &p_s2) const {
 	return isHere;
 }
 
-
 /**
  *  \brief Returns the number of vertices in the graph
  *
@@ -229,7 +218,6 @@ template<typename T>
 unsigned int SGLGraph<T>::order() const {
 	return m_nodes.size();
 }
-
 
 /**
  *  \brief Returns the number of edges in the graph
@@ -245,7 +233,6 @@ unsigned int SGLGraph<T>::size() const {
 	}
 	return order;
 }
-
 
 /**
  *  \brief Lists all the vertices in the graph
@@ -265,7 +252,6 @@ std::vector<T> SGLGraph<T>::vertices() const {
 	}
 	return elems;
 }
-
 
 /**
  *  \brief Returns the in-degree of a vertex in the graph
@@ -292,7 +278,6 @@ unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
 	return inDegree;
 }
 
-
 /**
  *  \brief Returns the out-degree of a vertex in the graph,
  *  i.e. the number of edges with other vertices it is the source of.
@@ -308,8 +293,6 @@ unsigned int SGLGraph<T>::vertexOutDegree(const T &p_s) const {
 	}
 	return m_nodes[_index(p_s)]->m_neighbors.size();
 }
-
-
 
 /**
  *  \brief Lists the adjacent vertices of a vertex in the graph.
@@ -338,8 +321,9 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s,
 		if (pos == index_v) {
 			// if we find the node of the given vertex, we add to the vector
 			// all the vertices it points to, after having checked they're not already in it
-			for (typename list<T>::const_iterator vert = cur->m_neighbors.begin();
-					vert != cur->m_neighbors.end(); ++vert) {
+			for (typename list<T>::const_iterator vert =
+					cur->m_neighbors.begin(); vert != cur->m_neighbors.end();
+					++vert) {
 				if (std::find(adjs.begin(), adjs.end(), (*vert))
 						== adjs.end()) {
 					adjs.push_back((*vert));
@@ -379,10 +363,11 @@ void SGLGraph<T>::display() const {
 		Node *cur = m_nodes[pos];
 
 		cout << "Vertex: " << cur->m_data << endl;
-		cout << "Source of " << cur->m_neighbors.size() << " edges to vertices:" << endl;
+		cout << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
+				<< endl;
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
 				v != cur->m_neighbors.end(); ++v) {
-			cout << (*v);
+			cout << cur->m_data << " -> " << (*v);
 			cout << endl;
 		}
 		if (cur->m_neighbors.size() == 0) {
@@ -392,6 +377,20 @@ void SGLGraph<T>::display() const {
 	}
 	if (m_nodes.size() == 0)
 		cout << "Empty graph" << endl;
+}
+
+template<typename T>
+vector<pair<T, T> > SGLGraph<T>::edges() const {
+	vector<pair<T, T> > edges;
+	for (unsigned int i = 0; i < m_nodes.size(); i++) {
+		Node *cur = m_nodes[i];
+
+		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
+				v != cur->m_neighbors.end(); ++v) {
+			edges.push_back(make_pair(cur->m_data, (*v)));
+		}
+	}
+	return edges;
 }
 
 template<typename T>

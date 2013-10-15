@@ -11,7 +11,8 @@
 #ifndef _SGLGRAPH_H
 #define _SGLGRAPH_H
 
-#include <iostream>
+#include <utility> // pair
+#include <iostream> // cout
 #include <stdexcept>
 #include <vector>
 #include <list>
@@ -34,10 +35,8 @@ public:
 	explicit SGLGraph();
 	SGLGraph(const SGLGraph&);
 	SGLGraph(const SGLGraph&, const std::vector<T>&);
-
 	// Destructor
 	~SGLGraph();
-
 	// Operator =
 	const SGLGraph& operator =(const SGLGraph&);
 
@@ -62,14 +61,40 @@ public:
 	bool			hasEdge(const T &, const T &) const;
 	unsigned int	order() const;
 	unsigned int	size() const;
+	std::vector<std::pair<T, T> > edges() const;
 
 	// Other
 	void	display() const;
+	static bool	areEqual(const SGLGraph &p_g1, const SGLGraph &p_g2) {
+		bool areEqual = true;
+
+		if ((p_g1.order() != p_g2.order()) || (p_g1.size() != p_g2.size())) {
+			areEqual = false;
+		}
+		if (areEqual) {
+			std::vector<T> elems = p_g1.vertices();
+
+			for (unsigned int i = 0; i < elems.size(); i++) {
+				if (!p_g2.hasVertex(elems[i])) {
+					areEqual = false;
+					break;
+				}
+			}
+			std::vector<std::pair <T, T> > edges = p_g1.edges();
+
+			for (unsigned int i = 0; i < edges.size(); i++) {
+				if (!p_g2.hasEdge(edges[i].first, edges[i].second)) {
+					areEqual = false;
+					break;
+				}
+			}
+		}
+		return areEqual;
+	}
 
 private:
 	/**
 	 * \class Node
-	 *
 	 * \brief Class used by the internal adjacency list of the graph.
 	 */
 	class Node {

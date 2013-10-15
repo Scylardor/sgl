@@ -246,6 +246,25 @@ TEST_F(GraphTest, display) {
 	graph.display();
 }
 
+TEST_F(GraphTest, areEqual) {
+	SGLGraph<int>	copy(graph);
+
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	graph.addVertex(42);
+	graph.addVertex(43);
+	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	copy.addVertex(42);
+	copy.addVertex(43);
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	graph.addEdge(42, 43);
+	graph.addEdge(43, 42);
+	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	copy.addEdge(42, 43);
+	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	copy.addEdge(43, 42);
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+}
+
 TEST_F(GraphTest, CopyConstructor) {
 	SGLGraph<int>	copy(graph);
 
@@ -265,4 +284,38 @@ TEST_F(GraphTest, CopyConstructor) {
 		found = std::find(vertices.begin(), vertices.end(), i);
 		EXPECT_NE(found, vertices.end());
 	}
+}
+
+TEST_F(GraphTest, AssignmentOperator) {
+	// from empty graph to empty graph
+	SGLGraph<int>	copy;
+
+	EXPECT_EQ((int)graph.size(), 0);
+	EXPECT_EQ((int)graph.order(), 0);
+	copy = graph;
+	EXPECT_EQ((int)copy.size(), 0);
+	EXPECT_EQ((int)copy.order(), 0);
+
+	// from full graph to empty graph
+	addVertices(6, 42);
+	graph.addEdge(42, 43);
+	graph.addEdge(42, 45);
+	graph.addEdge(43, 46);
+
+	copy = graph;
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+
+	// from empty graph to full graph
+	SGLGraph<int>	copy2;
+
+	copy = copy2;
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, copy2));
+
+	// from full graph to full graph
+	copy = graph;
+	addVertices(2, 1);
+	graph.addEdge(46, 45);
+	graph.addEdge(46, 42);
+	copy = graph;
+	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
 }
