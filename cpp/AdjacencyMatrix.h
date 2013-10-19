@@ -11,6 +11,8 @@
 #ifndef _ADJACENCYMATRIX_H
 #define _ADJACENCYMATRIX_H
 
+#include <vector>
+
 namespace SGL {
 /**
  * \class adjacency_matrix
@@ -21,44 +23,39 @@ namespace SGL {
 template<typename T>
 class Adjacency_Matrix {
 public:
-	Adjacency_Matrix(unsigned int p_size = 0);
+	Adjacency_Matrix(unsigned p_size = 0);
 	~Adjacency_Matrix();
 
 	// Getters (const)
+
 	/**
 	 * \brief Tells whether the vertex is a source or not
 	 * i.e. if it has no edges coming to it (in-degree = 0)
-	 * \post The graph remains unchanged
 	 * \return (boolean) whether the vertex is a source or not
 	 */
-	inline bool vertexIsSource(const T &p_v) const {
-		return (vertexInDegree(p_v) == 0);
-	}
+	inline bool vertexIsSource(const T &p_v) const { return (vertexInDegree(p_v) == 0); }
 
 	/**
 	 * \brief Tells whether the vertex is a sink or not
 	 * i.e. if it has no edges starting from it (out-degree = 0)
-	 * \post The graph remains unchanged
 	 * \return (boolean) whether the vertex is a sink or not
 	 */
-	inline bool vertexIsSink(const T &p_v) const {
-		return (vertexOutDegree(p_v) == 0);
-	}
+	inline bool vertexIsSink(const T &p_v) const { return (vertexOutDegree(p_v) == 0); }
 
 	/**
 	 * \brief Returns the number of vertices in the graph
-	 * \post The graph remains unchanged
 	 * \return the number of vertices in the graph
 	 */
-	inline unsigned int size() const {
-		return m_elems.size();
-	}
+	inline unsigned nbVertices() const { return m_elems.size(); }
+
+	inline unsigned nbEdges() const { return edges().size(); }
+
 	bool hasVertex(const T &) const;
-	unsigned int vertexInDegree(const T &) const;
-	unsigned int vertexOutDegree(const T &) const;
+	unsigned vertexInDegree(const T &) const;
+	unsigned vertexOutDegree(const T &) const;
 	std::vector<T> vertexNeighborhood(const T&, bool p_closed = false) const;
-	bool hasEdge(const T &, const T &) const;
 	std::vector<T> vertices() const;
+	bool hasEdge(const T &, const T &) const;
 	std::vector<std::pair<T, T> > edges() const;
 
 	// Setters (mutators)
@@ -67,13 +64,19 @@ public:
 	void addEdge(const T&, const T&);
 	void deleteEdge(const T&, const T&);
 
+	// Others
+	bool operator==(const Adjacency_Matrix &p_rhs);
+	void display();
+
 private:
 	std::vector<T> m_elems;
 	std::vector<std::vector<int> > m_matrix;
 
-	int		_index(const T &p_v) const;
+	int _index(const T &p_v) const;
 };
 
 } // namespace SGL
+
+#include "AdjacencyMatrix.hpp"
 
 #endif

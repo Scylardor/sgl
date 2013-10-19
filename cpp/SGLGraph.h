@@ -42,9 +42,7 @@ public:
 
 	// Getters (const)
 	/**
-	 * \brief Tells whether the vertex is a source or not
-	 * i.e. if it has no edges coming to it (in-degree = 0)
-	 * \post The graph remains unchanged
+	 * \brief Tells if a vertex is a source (no edges coming to it = in-degree 0)
 	 * \return (boolean) whether the vertex is a source or not
 	 */
 	inline bool vertexIsSource(const T &p_v) const {
@@ -52,9 +50,7 @@ public:
 	}
 
 	/**
-	 * \brief Tells whether the vertex is a sink or not
-	 * i.e. if it has no edges starting from it (out-degree = 0)
-	 * \post The graph remains unchanged
+	 * \brief Tells if a vertex is a sink (no edges starting from it = out-degree = 0)
 	 * \return (boolean) whether the vertex is a sink or not
 	 */
 	inline bool vertexIsSink(const T &p_v) const {
@@ -63,7 +59,6 @@ public:
 
 	/**
 	 * \brief Returns the number of vertices in the graph
-	 * \post The graph remains unchanged
 	 * \return the number of vertices in the graph
 	 */
 	inline unsigned int order() const {
@@ -80,46 +75,21 @@ public:
 	std::vector<std::pair<T, T> > edges() const;
 
 	// Setters (mutators)
-	void			addVertex(const T &);
-	void			deleteVertex(const T &);
-	void			addEdge(const T&, const T&);
-	void			deleteEdge(const T&, const T&);
+	void addVertex(const T &);
+	void deleteVertex(const T &);
+	void addEdge(const T&, const T&);
+	void deleteEdge(const T&, const T&);
 
 	// Others
-	void	display() const;
+	void display() const;
+	bool equals(const SGLGraph &p_g2);
+
 	/**
-	 * \brief Static member function to check the structural equality of two graphs
-	 * i.e. same vertices, and same edges
-	 * \param[in] p_g1 the first graph
+	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.
 	 * \param[in] p_g2 the second graph
 	 * \return whether the two graphs are structurally equal or not
 	 */
-	static bool	areEqual(const SGLGraph &p_g1, const SGLGraph &p_g2) {
-		bool areEqual = true;
-
-		if ((p_g1.order() != p_g2.order()) || (p_g1.size() != p_g2.size())) {
-			areEqual = false;
-		}
-		if (areEqual) {
-			std::vector<T> elems = p_g1.vertices();
-
-			for (unsigned int i = 0; i < elems.size(); i++) {
-				if (!p_g2.hasVertex(elems[i])) {
-					areEqual = false;
-					break;
-				}
-			}
-			std::vector<std::pair <T, T> > edges = p_g1.edges();
-
-			for (unsigned int i = 0; i < edges.size(); i++) {
-				if (!p_g2.hasEdge(edges[i].first, edges[i].second)) {
-					areEqual = false;
-					break;
-				}
-			}
-		}
-		return areEqual;
-	}
+	inline bool operator==(const SGLGraph &p_g2) { return equals(p_g2); }
 
 private:
 	/**
@@ -141,6 +111,7 @@ private:
 
 } // namespace SGL
 
+//#include "AdjacencyMatrix.hpp"
 #include "SGLGraph.hpp"
 
 #endif

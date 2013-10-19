@@ -403,6 +403,39 @@ vector<pair<T, T> > SGLGraph<T>::edges() const {
 
 
 /**
+ * \brief Checks the structural equality of two graphs: same vertices, same edges
+ * \param[in] p_g2 the second graph
+ * \return whether the two graphs are structurally equal or not
+ */
+template<typename T>
+bool SGLGraph<T>::equals(const SGLGraph &p_g2) {
+	bool areEqual = true;
+
+	if ((order() != p_g2.order()) || (size() != p_g2.size())) {
+		areEqual = false;
+	}
+	if (areEqual) {
+		std::vector<T> elems = vertices();
+
+		for (unsigned int i = 0; i < elems.size(); i++) {
+			if (!p_g2.hasVertex(elems[i])) {
+				areEqual = false;
+				break;
+			}
+		}
+		std::vector<std::pair <T, T> > theEdges = edges();
+
+		for (unsigned int i = 0; i < theEdges.size(); i++) {
+			if (!p_g2.hasEdge(theEdges[i].first, theEdges[i].second)) {
+				areEqual = false;
+				break;
+			}
+		}
+	}
+	return areEqual;
+}
+
+/**
  * \brief Private function used by a copy constructor to copy the adjacency list of another graph
  * \pre Enough memory available
  * \param[in] p_src the source graph

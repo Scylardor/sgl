@@ -143,7 +143,7 @@ TEST_F(GraphTest, vertexNeighborhood) {
 	vector<int> neighbors = graph.vertexNeighborhood(42);
 	vector<int>::const_iterator found;
 
-	// Neighborhood of 42 should be 4 vertices
+	// Neighborhood of 42 should be 3 vertices
 	EXPECT_EQ((int)neighbors.size(), 3);
 	for (int i = 43; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
@@ -249,20 +249,20 @@ TEST_F(GraphTest, display) {
 TEST_F(GraphTest, areEqual) {
 	SGLGraph<int>	copy(graph);
 
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_TRUE(copy == graph);
 	graph.addVertex(42);
 	graph.addVertex(43);
-	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_FALSE(copy == graph);
 	copy.addVertex(42);
 	copy.addVertex(43);
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_TRUE(copy == graph);
 	graph.addEdge(42, 43);
 	graph.addEdge(43, 42);
-	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_FALSE(copy == graph);
 	copy.addEdge(42, 43);
-	EXPECT_FALSE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_FALSE(copy == graph);
 	copy.addEdge(43, 42);
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_TRUE(copy == graph);
 }
 
 TEST_F(GraphTest, CopyConstructor) {
@@ -303,13 +303,13 @@ TEST_F(GraphTest, AssignmentOperator) {
 	graph.addEdge(43, 46);
 
 	copy = graph;
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_TRUE(copy == graph);
 
 	// from empty graph to full graph
 	SGLGraph<int>	copy2;
 
 	copy = copy2;
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, copy2));
+	EXPECT_TRUE(copy == copy2);
 
 	// from full graph to full graph
 	copy = graph;
@@ -317,5 +317,5 @@ TEST_F(GraphTest, AssignmentOperator) {
 	graph.addEdge(46, 45);
 	graph.addEdge(46, 42);
 	copy = graph;
-	EXPECT_TRUE(SGLGraph<int>::areEqual(copy, graph));
+	EXPECT_TRUE(copy == graph);
 }

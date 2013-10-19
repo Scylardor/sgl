@@ -14,7 +14,7 @@ using namespace std;
 
 namespace SGL {
 
-template <typename T>
+template<typename T>
 Adjacency_Matrix<T>::Adjacency_Matrix(unsigned int p_size) {
 	if (p_size != 0) {
 		m_elems.reserve(p_size);
@@ -22,9 +22,9 @@ Adjacency_Matrix<T>::Adjacency_Matrix(unsigned int p_size) {
 	}
 }
 
-template <typename T>
-Adjacency_Matrix<T>::~Adjacency_Matrix() {}
-
+template<typename T>
+Adjacency_Matrix<T>::~Adjacency_Matrix() {
+}
 
 /**
  * \brief verifies that a vertex is in the graph
@@ -43,7 +43,6 @@ bool Adjacency_Matrix<T>::hasVertex(const T &p_s) const {
 	}
 	return isHere;
 }
-
 
 /**
  * \brief verifies that an edge is in the graph
@@ -69,8 +68,80 @@ bool Adjacency_Matrix<T>::hasEdge(const T &p_s1, const T &p_s2) const {
 	return isHere;
 }
 
+template<typename T>
+unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_s) const {
+	int index_s;
+	unsigned indegree = 0;
 
-template <typename T>
+	try {
+		index_s = _index(p_s);
+	} catch (const logic_error &le) {
+		throw logic_error("vertexInDegree: the vertex isn't in the graph");
+	}
+	for (unsigned i = 0; i < m_matrix.size(); i++) {
+		if (m_matrix[i][index_s] == 1) {
+			indegree++;
+		}
+	}
+	return indegree;
+}
+
+template<typename T>
+unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_s) const {
+	int index_s;
+	unsigned outdegree = 0;
+
+	try {
+		index_s = _index(p_s);
+	} catch (const logic_error &le) {
+		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
+	}
+	for (unsigned i = 0; i < m_matrix[index_s].size(); i++) {
+		if (m_matrix[index_s][i] == 1) {
+			outdegree++;
+		}
+	}
+	return outdegree;
+}
+
+template<typename T>
+vector<T> Adjacency_Matrix<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+	unsigned index;
+
+	try {
+		index = _index(p_v);
+	} catch (const logic_error &le) {
+		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
+	}
+	vector<T> neighbors;
+
+	if (p_closed) {
+		neighbors.push_back(p_v);
+	}
+	for (unsigned i = 0; i < m_matrix.size(); i++) {
+		if (i == index) {
+			for (unsigned j = 0; j < m_matrix[i].size(); j++) {
+				if (m_matrix[i][j] == 1
+						&& (j != i || (j == i && p_closed == true))) {
+					if (find(neighbors.begin(), neighbors.end(), m_elems[j])
+							== neighbors.end()) {
+						neighbors.push_back(m_elems[j]);
+					}
+				}
+			}
+		} else {
+			if (m_matrix[i][index] == 1) {
+				if (find(neighbors.begin(), neighbors.end(), m_elems[i])
+						== neighbors.end()) {
+					neighbors.push_back(m_elems[i]);
+				}
+			}
+		}
+	}
+	return neighbors;
+}
+
+template<typename T>
 void Adjacency_Matrix<T>::addVertex(const T &p_elem) {
 	vector<int> newline(m_matrix.size(), 0);
 
@@ -83,7 +154,6 @@ void Adjacency_Matrix<T>::addVertex(const T &p_elem) {
 		m_matrix[i].push_back(0);
 	}
 }
-
 
 /**
  * \brief deletes a vertex from the graph
@@ -108,7 +178,6 @@ void Adjacency_Matrix<T>::deleteVertex(const T &p_s) {
 	m_elems.erase(m_elems.begin() + index_s);
 }
 
-
 /**
  * \brief Adds an edge in the graph
  * \param[in] p_s1 the source vertex of the edge
@@ -130,7 +199,6 @@ void Adjacency_Matrix<T>::addEdge(const T &p_s1, const T &p_s2) {
 	}
 	m_matrix[index_s1][index_s2] = 1;
 }
-
 
 /**
  * \brief Deletes an edge in the graph
@@ -185,6 +253,49 @@ vector<pair<T, T> > Adjacency_Matrix<T>::edges() const {
 	}
 	return edges;
 }
+
+
+template<typename T>
+bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) {
+	bool areEqual = true;
+
+	if (nbEdges() != p_rhs.nbEdges() || nbVertices() != p_rhs.nbVertices()) {
+		areEqual = false;
+	}
+	// splitting in two if's as we have to know if vectors are of same size to perform comparison
+	if (areEqual && (m_elems != p_rhs.m_elems || m_matrix != p_rhs.m_matrix)) {
+		areEqual = false;
+	}
+	return areEqual;
+}
+
+
+template<typename T>
+void Adjacency_Matrix<T>::display() {
+	cout << "Matrix vertices number: " << nbVertices() << endl;
+	cout << "Matrix edges number: " << nbEdges() << endl;
+	cout << "Matrix composition:" << endl;
+	if (nbVertices() == 0) {
+		cout << "null";
+	} else {
+		cout << "\t";
+	}
+	for (unsigned i = 0; i < m_elems.size(); i++) {
+		cout << m_elems[i] << "\t";
+	}
+	cout << endl;
+	for (unsigned i = 0; i < m_matrix.size(); i++) {
+		cout << m_elems[i] << "\t";
+		for (unsigned j = 0; j < m_matrix[i].size(); j++) {
+			cout << m_matrix[i][j] << "\t";
+		}
+		cout << endl;
+	}
+}
+
+
+
+
 
 /**
  * \brief Private function used to retrieve the index in the intern adjacency list of an element
