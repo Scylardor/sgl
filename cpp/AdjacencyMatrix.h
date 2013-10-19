@@ -29,22 +29,20 @@ public:
 	// Getters (const)
 
 	/**
-	 * \brief Tells whether the vertex is a source or not
-	 * i.e. if it has no edges coming to it (in-degree = 0)
+	 * \brief \brief Tells if a vertex is a source (no edges coming to it = in-degree 0)
 	 * \return (boolean) whether the vertex is a source or not
 	 */
 	inline bool vertexIsSource(const T &p_v) const { return (vertexInDegree(p_v) == 0); }
 
 	/**
-	 * \brief Tells whether the vertex is a sink or not
-	 * i.e. if it has no edges starting from it (out-degree = 0)
+	 * \brief Tells if a vertex is a sink (no edges starting from it = out-degree = 0)
 	 * \return (boolean) whether the vertex is a sink or not
 	 */
 	inline bool vertexIsSink(const T &p_v) const { return (vertexOutDegree(p_v) == 0); }
 
 	/**
-	 * \brief Returns the number of vertices in the graph
-	 * \return the number of vertices in the graph
+	 * \brief Returns the number of vertices in the matrix
+	 * \return the number of vertices in the matrix
 	 */
 	inline unsigned nbVertices() const { return m_elems.size(); }
 

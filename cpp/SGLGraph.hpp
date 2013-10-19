@@ -88,7 +88,7 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
 
 /**
  * \brief Adds a vertex to the graph
- * \param[in] p_s the new element to put in the graph
+ * \param[in] p_v the new element to put in the graph
  * \pre Enough memory available
  * \pre The vertex isn't already in the graph
  * \post The graph counts one more vertex
@@ -96,19 +96,19 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
  * \exception logic_error if the vertex already is in the graph
  */
 template<typename T>
-void SGLGraph<T>::addVertex(const T &p_s) {
-	if (hasVertex(p_s)) {
+void SGLGraph<T>::addVertex(const T &p_v) {
+	if (hasVertex(p_v)) {
 		throw logic_error("addVertex: this vertex is already in the graph");
 	}
-	Node *newv = new Node(p_s);
+	Node *newv = new Node(p_v);
 
 	m_nodes.push_back(newv);
 }
 
 /**
  * \brief Adds an edge in the graph
- * \param[in] p_s1 the source vertex of the edge
- * \param[in] p_s2 the destination vertex of the edge
+ * \param[in] p_v1 the source vertex of the edge
+ * \param[in] p_v2 the destination vertex of the edge
  * \pre Enough memory available
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph counts one more edge
@@ -116,11 +116,11 @@ void SGLGraph<T>::addVertex(const T &p_s) {
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::addEdge(const T &p_s1, const T &p_s2) {
+void SGLGraph<T>::addEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
-		index_s1 = _index(p_s1);
-		index_s2 = _index(p_s2);
+		index_s1 = _index(p_v1);
+		index_s2 = _index(p_v2);
 	} catch (const logic_error &le) {
 		throw logic_error("addEdge: one of the vertices isn't in the graph");
 	}
@@ -129,22 +129,22 @@ void SGLGraph<T>::addEdge(const T &p_s1, const T &p_s2) {
 
 /**
  * \brief Deletes an edge in the graph
- * \param[in] p_s1 the source vertex of the edge
- * \param[in] p_s2 the destination vertex of the edge
+ * \param[in] p_v1 the source vertex of the edge
+ * \param[in] p_v2 the destination vertex of the edge
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph counts one less edge
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteEdge(const T &p_s1, const T &p_s2) {
+void SGLGraph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
-		index_s1 = _index(p_s1);
-		index_s2 = _index(p_s2);
+		index_s1 = _index(p_v1);
+		index_s2 = _index(p_v2);
 	} catch (const logic_error &le) {
 		throw logic_error("deleteEdge: one of the vertices isn't in the graph");
 	}
-	if (!hasEdge(p_s1, p_s2)) {
+	if (!hasEdge(p_v1, p_v2)) {
 		throw logic_error("deleteEdge: no edge between the two vertices");
 	}
 	m_nodes[index_s1]->m_neighbors.remove(m_nodes[index_s2]->m_data);
@@ -152,17 +152,17 @@ void SGLGraph<T>::deleteEdge(const T &p_s1, const T &p_s2) {
 
 /**
  * \brief deletes a vertex from the graph
- * \param[in] p_s The element we want to delete the vertex of
+ * \param[in] p_v The element we want to delete the vertex of
  * \pre The vertex is in the graph
  * \post The graph counts one less vertex
  * \exception logic_error if the vertex isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteVertex(const T &p_s) {
+void SGLGraph<T>::deleteVertex(const T &p_v) {
 	int index_s;
 
 	try {
-		index_s = _index(p_s);
+		index_s = _index(p_v);
 	} catch (const logic_error &le) {
 		throw logic_error("deleteVertex: the vertex isn't in the graph");
 	}
@@ -175,16 +175,16 @@ void SGLGraph<T>::deleteVertex(const T &p_s) {
 
 /**
  * \brief verifies that a vertex is in the graph
- * \param[in] p_s the element we search the vertex of
+ * \param[in] p_v the element we search the vertex of
  * \post The graph remains unchanged
  * \return whether the graph contains this vertex or not
  */
 template<typename T>
-bool SGLGraph<T>::hasVertex(const T &p_s) const {
+bool SGLGraph<T>::hasVertex(const T &p_v) const {
 	bool isHere = true;
 
 	try {
-		_index(p_s);
+		_index(p_v);
 	} catch (const logic_error &le) {
 		isHere = false;
 	}
@@ -193,21 +193,21 @@ bool SGLGraph<T>::hasVertex(const T &p_s) const {
 
 /**
  * \brief verifies that an edge is in the graph
- * \param[in] p_s1 the source vertex of the edge
- * \param[in] p_s2 the destination vertex of the edge
+ * \param[in] p_v1 the source vertex of the edge
+ * \param[in] p_v2 the destination vertex of the edge
  * \pre The 2 vertices of the edge are in the graph
  * \post The graph remains unchanged
  * \exception logic_error if one of the two vertices isn't in the graph
  * \return whether the graph contains this edge or not
  */
 template<typename T>
-bool SGLGraph<T>::hasEdge(const T &p_s1, const T &p_s2) const {
+bool SGLGraph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
 	bool isHere = true;
 	int index_s1, index_s2;
 
 	try {
-		index_s1 = _index(p_s1);
-		index_s2 = _index(p_s2);
+		index_s1 = _index(p_v1);
+		index_s2 = _index(p_v2);
 	} catch (const logic_error &le) {
 		throw logic_error("hasEdge: one of the vertices isn't in the graph");
 	}
@@ -259,7 +259,6 @@ std::vector<T> SGLGraph<T>::vertices() const {
  * goes to it.
  * \param[in] p_v the vertex we want to know the in-degree of
  * \pre The vertex has to be in the graph
- * \post The graph remains unchanged
  * \exception logic_error if the vertex isn't in the graph
  * \return the number of edges to other vertices the vertex is the destination of
  */
@@ -283,38 +282,36 @@ unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
  *  i.e. the number of edges with other vertices it is the source of.
  * \param[in] p_v the vertex we want to know the out-degree of
  * \pre The vertex must be in the graph
- * \post The graph remains unchanged
  * \exception logic_error if the vertex isn't in the graph
  * \return the number of edges to other vertices the vertex is the source of
  */
 template<typename T>
-unsigned int SGLGraph<T>::vertexOutDegree(const T &p_s) const {
-	if (!hasVertex(p_s)) {
+unsigned int SGLGraph<T>::vertexOutDegree(const T &p_v) const {
+	if (!hasVertex(p_v)) {
 		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
 	}
-	return m_nodes[_index(p_s)]->m_neighbors.size();
+	return m_nodes[_index(p_v)]->m_neighbors.size();
 }
 
 /**
  *  \brief Lists the adjacent vertices of a vertex in the graph.
  *  If closed boolean is set to true, the vertex itself will be included in the returned neighborhood,
  *  making it a closed neighborhood (as opposed to the open version, without it included).
- * \param[in] p_s the vertex we want the neighborhood of
+ * \param[in] p_v the vertex we want the neighborhood of
  * \param[in] p_closed boolean to say whether we want the closed neighborhood of the vertex or not (false by default)
  * \pre Enough memory available
  * \pre The vertex has to be in the graph
- * \post The graph remains unchanged
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if the vertex isn't in the graph
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s, bool p_closed) const {
-	if (!hasVertex(p_s)) {
+std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+	if (!hasVertex(p_v)) {
 		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
 	}
 	vector<T> adjs;
-	unsigned int index_v = _index(p_s);
+	unsigned int index_v = _index(p_v);
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		Node *cur = m_nodes[pos];
@@ -343,7 +340,7 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_s, bool p_closed) cons
 		}
 	}
 	if (p_closed) {
-		adjs.push_back(p_s);
+		adjs.push_back(p_v);
 	}
 	return adjs;
 }
