@@ -16,14 +16,14 @@ namespace SGL {
 
 /**
  * \brief Default constructor. Reserves size for vertices if provided
- * \param[in] p_vize the size to reserve in the vector
+ * \param[in] p_size the size to reserve in the vector
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_Matrix<T>::Adjacency_Matrix(unsigned int p_vize) {
-	if (p_vize != 0) {
-		m_elems.reserve(p_vize);
-		m_matrix.reserve(p_vize);
+Adjacency_Matrix<T>::Adjacency_Matrix(unsigned int p_size) {
+	if (p_size != 0) {
+		m_elems.reserve(p_size);
+		m_matrix.reserve(p_size);
 	}
 }
 
