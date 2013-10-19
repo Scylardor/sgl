@@ -73,7 +73,7 @@ public:
 
 	// Others
 	void display() const;
-	bool equals(const Adjacency_List &p_g2);
+	bool equals(const Adjacency_List &p_g2) const;
 
 	/**
 	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.

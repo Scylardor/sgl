@@ -383,7 +383,7 @@ vector<pair<T, T> > Adjacency_List<T>::edges() const {
  * \return whether the two graphs are structurally equal or not
  */
 template<typename T>
-bool Adjacency_List<T>::equals(const Adjacency_List &p_g2) {
+bool Adjacency_List<T>::equals(const Adjacency_List &p_g2) const {
 	bool areEqual = true;
 
 	if ((nbVertices() != p_g2.nbVertices()) || (nbEdges() != p_g2.nbEdges())) {

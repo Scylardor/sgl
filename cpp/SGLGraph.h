@@ -82,14 +82,14 @@ public:
 
 	// Others
 	void display() const;
-	bool equals(const SGLGraph &p_g2);
+	bool equals(const SGLGraph &p_g2) const;
 
 	/**
 	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.
 	 * \param[in] p_g2 the second graph
 	 * \return whether the two graphs are structurally equal or not
 	 */
-	inline bool operator==(const SGLGraph &p_g2) { return equals(p_g2); }
+	inline bool operator==(const SGLGraph &p_g2) const { return equals(p_g2); }
 
 private:
 	/**

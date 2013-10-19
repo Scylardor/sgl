@@ -63,8 +63,8 @@ public:
 	void deleteEdge(const T&, const T&);
 
 	// Others
-	bool operator==(const Adjacency_Matrix &p_rhs);
-	void display();
+	bool operator==(const Adjacency_Matrix &p_rhs) const;
+	void display() const;
 
 private:
 	std::vector<T> m_elems;

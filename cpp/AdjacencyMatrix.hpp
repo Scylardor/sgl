@@ -312,7 +312,7 @@ vector<pair<T, T> > Adjacency_Matrix<T>::edges() const {
  * \return true if the matrices are identical, else false
  */
 template<typename T>
-bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) {
+bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
 	bool areEqual = true;
 
 	if (nbEdges() != p_rhs.nbEdges() || nbVertices() != p_rhs.nbVertices()) {
@@ -329,7 +329,7 @@ bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) {
  * \brief Output function.
  */
 template<typename T>
-void Adjacency_Matrix<T>::display() {
+void Adjacency_Matrix<T>::display() const {
 	cout << "Matrix vertices number: " << nbVertices() << endl;
 	cout << "Matrix edges number: " << nbEdges() << endl;
 	cout << "Matrix composition:" << endl;

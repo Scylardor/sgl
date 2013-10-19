@@ -405,7 +405,7 @@ vector<pair<T, T> > SGLGraph<T>::edges() const {
  * \return whether the two graphs are structurally equal or not
  */
 template<typename T>
-bool SGLGraph<T>::equals(const SGLGraph &p_g2) {
+bool SGLGraph<T>::equals(const SGLGraph &p_g2) const {
 	bool areEqual = true;
 
 	if ((order() != p_g2.order()) || (size() != p_g2.size())) {
