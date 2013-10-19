@@ -1,44 +1,28 @@
-/**
- * \file SGLGraph.h
- * \brief Class of the generic template class SGLGraph
- * \author Alexandre Baron
- * \version 0.1
- * \date 2013, October
- *
- * SGLGraph definition.
- */
+//! \file AdjacencyList.h
+//! \brief Declaration of a generic adjacency list for usage in a graph
+//! \author baron_a
+//! \version 0.1
+//! \date Oct 19, 2013
 
-#ifndef _SGLGRAPH_H
-#define _SGLGRAPH_H
+#ifndef ADJACENCYLIST_H_
+#define ADJACENCYLIST_H_
 
-#include <utility> // pair
-#include <iostream> // cout
-#include <stdexcept>
 #include <vector>
 #include <list>
 
 namespace SGL {
-/**
- * \class SGLGraph
- *
- * \brief Class representing a generic graph
- * The goal of this class is to implement a graph as generic as it can be.
- * To do it, it intends to permit extensive parameterization, including :
- * - making the graph directed or not, or mixed (with edges directed and some not)
- * - making it weighted or not
- * - allowing of choosing the internal representation of data (adjacency matrix, adjacency list, edge list...)
- */
-template<typename T>
-class SGLGraph {
+
+template <typename T>
+class Adjacency_List {
 public:
 	// Constructors
-	explicit SGLGraph();
-	SGLGraph(const SGLGraph& p_src);
-	SGLGraph(const SGLGraph& p_src, const std::vector<T>& p_filter);
+	explicit Adjacency_List();
+	Adjacency_List(const Adjacency_List& p_src);
+	Adjacency_List(const Adjacency_List& p_src, const std::vector<T>& p_filter);
 	// Destructor
-	~SGLGraph();
+	~Adjacency_List();
 	// Operator =
-	const SGLGraph& operator =(const SGLGraph &p_src);
+	const Adjacency_List& operator =(const Adjacency_List &p_src);
 
 	// Getters (const)
 	/**
@@ -58,11 +42,19 @@ public:
 	}
 
 	/**
-	 * \brief Returns the number of vertices in the graph
-	 * \return the number of vertices in the graph
+	 * \brief Returns the number of vertices in the list
+	 * \return the number of vertices in the list
 	 */
-	inline unsigned int order() const {
+	inline unsigned int nbVertices() const {
 		return m_nodes.size();
+	}
+
+	/**
+	 * \brief Returns the number of edges in the list
+	 * \return the number of edges in the list
+	 */
+	inline unsigned int nbEdges() const {
+		return edges().size();
 	}
 
 	bool			hasVertex(const T &) const;
@@ -70,7 +62,6 @@ public:
 	unsigned int	vertexOutDegree(const T &) const;
 	std::vector<T>	vertexNeighborhood(const T&, bool p_closed = false) const;
 	bool			hasEdge(const T &, const T &) const;
-	unsigned int	size() const;
 	std::vector<T>	vertices() const;
 	std::vector<std::pair<T, T> > edges() const;
 
@@ -82,19 +73,19 @@ public:
 
 	// Others
 	void display() const;
-	bool equals(const SGLGraph &p_g2);
+	bool equals(const Adjacency_List &p_g2);
 
 	/**
 	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.
 	 * \param[in] p_g2 the second graph
-	 * \return whether the two graphs are structurally equal or not
+	 * \return whether the two lists are structurally equal or not
 	 */
-	inline bool operator==(const SGLGraph &p_g2) { return equals(p_g2); }
+	inline bool operator==(const Adjacency_List &p_g2) { return equals(p_g2); }
 
 private:
 	/**
 	 * \class Node
-	 * \brief Class used by the internal adjacency list of the graph.
+	 * \brief Internal class of the list.
 	 */
 	class Node {
 	public:
@@ -105,14 +96,12 @@ private:
 	};
 	std::vector<Node *> m_nodes; /*!< internal container for the adjacency list nodes */
 
-	void	_copyAdjacencyList(const SGLGraph &p_src);
+	void	_copyAdjacencyList(const Adjacency_List &p_src);
 	int		_index(const T &p_v) const;
 };
 
-} // namespace SGL
+}
 
-#include "AdjacencyMatrix.h"
-#include "AdjacencyList.h"
-#include "SGLGraph.hpp"
+#include "AdjacencyList.hpp"
 
-#endif
+#endif /* ADJACENCYLIST_H_ */

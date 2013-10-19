@@ -1,16 +1,10 @@
-/**
- * \file SGLGraph.hpp
- * \brief SGLGraph implementation.
- * \author Alexandre Baron
- * \version 0.1
- * \date 2013, October
- *
- * Implementation of a generic graph with an adjacency list
- */
+//! \file AdjacencyList.hpp
+//! \brief Implementation of a generic graph adjacency list
+//! \author baron_a
+//! \version 0.1
+//! \date Oct 19, 2013
 
-#include <algorithm>
-
-#include "SGLGraph.h"
+#include "AdjacencyList.h"
 
 using namespace std;
 
@@ -18,12 +12,11 @@ namespace SGL {
 
 /**
  *  \brief Constructor
- *
  *  \pre Enough memory available
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-SGLGraph<T>::SGLGraph() {
+Adjacency_List<T>::Adjacency_List() {
 }
 
 /**
@@ -34,7 +27,7 @@ SGLGraph<T>::SGLGraph() {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
+Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src) {
 	_copyAdjacencyList(p_src);
 }
 
@@ -50,11 +43,11 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
  * \exception logic_error if a vertex in filter vector isn't contained in the source graph
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
+Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
 	for (typename vector<T>::const_iterator vertex = p_filter.begin();
 			vertex != p_filter.end(); ++vertex) {
 		if (!p_src.hasVertex((*vertex))) {
-			throw logic_error("SGLGraph: a filter vector's vertex isn't in the source graph");
+			throw logic_error("Adjacency_List: a filter vector's vertex isn't in the source graph");
 		}
 		addVertex((*vertex));
 	}
@@ -64,7 +57,7 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { /
  *  \brief Destructor
  */
 template<typename T>
-SGLGraph<T>::~SGLGraph() {
+Adjacency_List<T>::~Adjacency_List() {
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		delete m_nodes[pos];
 	}
@@ -79,8 +72,8 @@ SGLGraph<T>::~SGLGraph() {
  * \return the current graph returns itself
  */
 template<typename T>
-const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
-	SGLGraph<T> temp(p_src);
+const Adjacency_List<T> & Adjacency_List<T>::operator =(const Adjacency_List<T> &p_src) {
+	Adjacency_List<T> temp(p_src);
 
 	std::swap(m_nodes, temp.m_nodes);
 	return *this;
@@ -96,7 +89,7 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
  * \exception logic_error if the vertex already is in the graph
  */
 template<typename T>
-void SGLGraph<T>::addVertex(const T &p_v) {
+void Adjacency_List<T>::addVertex(const T &p_v) {
 	if (hasVertex(p_v)) {
 		throw logic_error("addVertex: this vertex is already in the graph");
 	}
@@ -116,7 +109,7 @@ void SGLGraph<T>::addVertex(const T &p_v) {
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::addEdge(const T &p_v1, const T &p_v2) {
+void Adjacency_List<T>::addEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -136,7 +129,7 @@ void SGLGraph<T>::addEdge(const T &p_v1, const T &p_v2) {
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
+void Adjacency_List<T>::deleteEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -158,7 +151,7 @@ void SGLGraph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
  * \exception logic_error if the vertex isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteVertex(const T &p_v) {
+void Adjacency_List<T>::deleteVertex(const T &p_v) {
 	int index_s;
 
 	try {
@@ -180,7 +173,7 @@ void SGLGraph<T>::deleteVertex(const T &p_v) {
  * \return whether the graph contains this vertex or not
  */
 template<typename T>
-bool SGLGraph<T>::hasVertex(const T &p_v) const {
+bool Adjacency_List<T>::hasVertex(const T &p_v) const {
 	bool isHere = true;
 
 	try {
@@ -201,7 +194,7 @@ bool SGLGraph<T>::hasVertex(const T &p_v) const {
  * \return whether the graph contains this edge or not
  */
 template<typename T>
-bool SGLGraph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
+bool Adjacency_List<T>::hasEdge(const T &p_v1, const T &p_v2) const {
 	bool isHere = true;
 	int index_s1, index_s2;
 
@@ -220,21 +213,6 @@ bool SGLGraph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
 }
 
 /**
- * \brief Returns the number of edges in the graph
- * \post The graph remains unchanged
- * \return the number of edges in the graph
- */
-template<typename T>
-unsigned int SGLGraph<T>::size() const {
-	unsigned int order = 0;
-
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		order += m_nodes[pos]->m_neighbors.size();
-	}
-	return order;
-}
-
-/**
  * \brief Lists all the vertices in the graph
  * Returns in a vector all the vertices of the graph
  * \pre Enough memory available
@@ -243,7 +221,7 @@ unsigned int SGLGraph<T>::size() const {
  * \return a vector containing all the vertices of the graph
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertices() const {
+std::vector<T> Adjacency_List<T>::vertices() const {
 	vector<T> elems;
 
 	elems.reserve(m_nodes.size());
@@ -263,7 +241,7 @@ std::vector<T> SGLGraph<T>::vertices() const {
  * \return the number of edges to other vertices the vertex is the destination of
  */
 template<typename T>
-unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
+unsigned int Adjacency_List<T>::vertexInDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexInDegree: the vertex isn't in the graph");
 	}
@@ -286,7 +264,7 @@ unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
  * \return the number of edges to other vertices the vertex is the source of
  */
 template<typename T>
-unsigned int SGLGraph<T>::vertexOutDegree(const T &p_v) const {
+unsigned int Adjacency_List<T>::vertexOutDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
 	}
@@ -306,7 +284,7 @@ unsigned int SGLGraph<T>::vertexOutDegree(const T &p_v) const {
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+std::vector<T> Adjacency_List<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
 	}
@@ -352,9 +330,9 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) cons
  * \post The graph remains unchanged
  */
 template<typename T>
-void SGLGraph<T>::display() const {
-	cout << "Number of vertices: " << order() << endl;
-	cout << "Number of edges: " << size() << endl;
+void Adjacency_List<T>::display() const {
+	cout << "Number of vertices: " << nbVertices() << endl;
+	cout << "Number of edges: " << nbEdges() << endl;
 	cout << "List of vertices and their edges:" << endl << endl;
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		Node *cur = m_nodes[pos];
@@ -385,7 +363,7 @@ void SGLGraph<T>::display() const {
  * \return A vector of pairs of elements organized as (source, destination)
  */
 template<typename T>
-vector<pair<T, T> > SGLGraph<T>::edges() const {
+vector<pair<T, T> > Adjacency_List<T>::edges() const {
 	vector<pair<T, T> > edges;
 	for (unsigned int i = 0; i < m_nodes.size(); i++) {
 		Node *cur = m_nodes[i];
@@ -405,10 +383,10 @@ vector<pair<T, T> > SGLGraph<T>::edges() const {
  * \return whether the two graphs are structurally equal or not
  */
 template<typename T>
-bool SGLGraph<T>::equals(const SGLGraph &p_g2) {
+bool Adjacency_List<T>::equals(const Adjacency_List &p_g2) {
 	bool areEqual = true;
 
-	if ((order() != p_g2.order()) || (size() != p_g2.size())) {
+	if ((nbVertices() != p_g2.nbVertices()) || (nbEdges() != p_g2.nbEdges())) {
 		areEqual = false;
 	}
 	if (areEqual) {
@@ -440,11 +418,11 @@ bool SGLGraph<T>::equals(const SGLGraph &p_g2) {
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
-	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
+void Adjacency_List<T>::_copyAdjacencyList(const Adjacency_List &p_src) {
+	for (unsigned pos = 0; pos < p_src.nbVertices(); pos++) {
 		addVertex(p_src.m_nodes[pos]->m_data);
 	}
-	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
+	for (unsigned pos = 0; pos < p_src.nbVertices(); pos++) {
 		Node *cur = p_src.m_nodes[pos];
 
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
@@ -462,7 +440,7 @@ void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
  * \return the index in the adjacency list of the given vertex's node
  */
 template<typename T>
-int SGLGraph<T>::_index(const T &p_v) const {
+int Adjacency_List<T>::_index(const T &p_v) const {
 	int index = -1;
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
