@@ -229,9 +229,9 @@ TEST_F(AdjacencyListTest, hasEdge) {
 }
 
 TEST_F(AdjacencyListTest, display) {
-	list.display();
+	cout << list;
 	addVertices(6, 42);
-	list.display();
+	cout << list;
 	list.addEdge(42, 43);
 	list.addEdge(42, 45);
 	list.addEdge(43, 46);
@@ -244,7 +244,7 @@ TEST_F(AdjacencyListTest, display) {
 	list.addEdge(47, 45);
 	list.addEdge(47, 46);
 	list.addEdge(47, 47);
-	list.display();
+	cout << list;
 }
 
 TEST_F(AdjacencyListTest, CopyConstructor) {

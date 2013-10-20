@@ -228,9 +228,9 @@ TEST_F(GraphTest, hasEdge) {
 }
 
 TEST_F(GraphTest, display) {
-	graph.display();
+	cout << graph;
 	addVertices(6, 42);
-	graph.display();
+	cout << graph;
 	graph.addEdge(42, 43);
 	graph.addEdge(42, 45);
 	graph.addEdge(43, 46);
@@ -243,7 +243,7 @@ TEST_F(GraphTest, display) {
 	graph.addEdge(47, 45);
 	graph.addEdge(47, 46);
 	graph.addEdge(47, 47);
-	graph.display();
+	cout << graph;
 }
 
 TEST_F(GraphTest, areEqual) {

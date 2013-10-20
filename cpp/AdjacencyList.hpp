@@ -330,28 +330,32 @@ std::vector<T> Adjacency_List<T>::vertexNeighborhood(const T &p_v, bool p_closed
  * \post The graph remains unchanged
  */
 template<typename T>
-void Adjacency_List<T>::display() const {
-	cout << "Number of vertices: " << nbVertices() << endl;
-	cout << "Number of edges: " << nbEdges() << endl;
-	cout << "List of vertices and their edges:" << endl << endl;
+const std::string Adjacency_List<T>::_repr() const {
+	stringstream stream;
+
+	stream << "Number of vertices: " << nbVertices() << endl;
+	stream << "Number of edges: " << nbEdges() << endl;
+	stream << "List of vertices and their edges:" << endl << endl;
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		Node *cur = m_nodes[pos];
 
-		cout << "Vertex: " << cur->m_data << endl;
-		cout << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
+		stream << "Vertex: " << cur->m_data << endl;
+		stream << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
 				<< endl;
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
 				v != cur->m_neighbors.end(); ++v) {
-			cout << cur->m_data << " -> " << (*v);
-			cout << endl;
+			stream << cur->m_data << " -> " << (*v);
+			stream << endl;
 		}
 		if (cur->m_neighbors.size() == 0) {
-			cout << "No edges" << endl;
+			stream << "No edges" << endl;
 		}
-		cout << endl;
+		stream << endl;
 	}
-	if (m_nodes.size() == 0)
-		cout << "Empty graph" << endl;
+	if (m_nodes.size() == 0) {
+		stream << "Empty list" << endl;
+	}
+	return stream.str();
 }
 
 /**

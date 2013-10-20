@@ -12,8 +12,6 @@
 #define _SGLGRAPH_H
 
 #include <utility> // pair
-#include <iostream> // cout
-#include <stdexcept>
 #include <vector>
 #include <list>
 
@@ -81,7 +79,6 @@ public:
 	void deleteEdge(const T&, const T&);
 
 	// Others
-	void display() const;
 	bool equals(const SGLGraph &p_g2) const;
 
 	/**
@@ -90,6 +87,10 @@ public:
 	 * \return whether the two graphs are structurally equal or not
 	 */
 	inline bool operator==(const SGLGraph &p_g2) const { return equals(p_g2); }
+
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const SGLGraph &p_graph) {
+		p_stream << p_graph._repr(); return p_stream;
+	}
 
 private:
 	/**
@@ -107,6 +108,7 @@ private:
 
 	void	_copyAdjacencyList(const SGLGraph &p_src);
 	int		_index(const T &p_v) const;
+	const std::string _repr() const;
 };
 
 } // namespace SGL

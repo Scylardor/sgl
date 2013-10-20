@@ -230,9 +230,9 @@ TEST_F(AdjacencyMatrixTest, hasEdge) {
 }
 
 TEST_F(AdjacencyMatrixTest, display) {
-	matrix.display();
+	cout << matrix;
 	addVertices(6, 42);
-	matrix.display();
+	cout << matrix;
 	matrix.addEdge(42, 43);
 	matrix.addEdge(42, 45);
 	matrix.addEdge(43, 46);
@@ -245,7 +245,7 @@ TEST_F(AdjacencyMatrixTest, display) {
 	matrix.addEdge(47, 45);
 	matrix.addEdge(47, 46);
 	matrix.addEdge(47, 47);
-	matrix.display();
+	cout << matrix;
 }
 
 TEST_F(AdjacencyMatrixTest, CopyConstructor) {

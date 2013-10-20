@@ -64,13 +64,18 @@ public:
 
 	// Others
 	bool operator==(const Adjacency_Matrix &p_rhs) const;
-	void display() const;
+
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_Matrix &p_matrix) {
+		p_stream << p_matrix._repr(); return p_stream;
+	}
+
 
 private:
-	std::vector<T> m_elems;
-	std::vector<std::vector<int> > m_matrix;
+	std::vector<T> m_elems; /*!< all the vertices */
+	std::vector<std::vector<int> > m_matrix; /*!< the adjacency matrix itself */
 
 	int _index(const T &p_v) const;
+	const std::string _repr() const;
 };
 
 } // namespace SGL

@@ -8,7 +8,9 @@
  * Implementation of a generic graph with an adjacency list
  */
 
-#include <algorithm>
+#include <algorithm> // find
+#include <sstream> // stringstream
+#include <stdexcept>
 
 #include "SGLGraph.h"
 
@@ -352,28 +354,32 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) cons
  * \post The graph remains unchanged
  */
 template<typename T>
-void SGLGraph<T>::display() const {
-	cout << "Number of vertices: " << order() << endl;
-	cout << "Number of edges: " << size() << endl;
-	cout << "List of vertices and their edges:" << endl << endl;
+const string SGLGraph<T>::_repr() const {
+	stringstream stream;
+
+	stream << "Number of vertices: " << order() << endl;
+	stream << "Number of edges: " << size() << endl;
+	stream << "List of vertices and their edges:" << endl << endl;
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		Node *cur = m_nodes[pos];
 
-		cout << "Vertex: " << cur->m_data << endl;
-		cout << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
+		stream << "Vertex: " << cur->m_data << endl;
+		stream << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
 				<< endl;
 		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
 				v != cur->m_neighbors.end(); ++v) {
-			cout << cur->m_data << " -> " << (*v);
-			cout << endl;
+			stream << cur->m_data << " -> " << (*v);
+			stream << endl;
 		}
 		if (cur->m_neighbors.size() == 0) {
-			cout << "No edges" << endl;
+			stream << "No edges" << endl;
 		}
-		cout << endl;
+		stream << endl;
 	}
-	if (m_nodes.size() == 0)
-		cout << "Empty graph" << endl;
+	if (m_nodes.size() == 0) {
+		stream << "Empty graph" << endl;
+	}
+	return stream.str();
 }
 
 /**

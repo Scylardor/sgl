@@ -82,6 +82,10 @@ public:
 	 */
 	inline bool operator==(const Adjacency_List &p_g2) { return equals(p_g2); }
 
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_List &p_list) {
+		p_stream << p_list._repr(); return p_stream;
+	}
+
 private:
 	/**
 	 * \class Node
@@ -98,6 +102,7 @@ private:
 
 	void	_copyAdjacencyList(const Adjacency_List &p_src);
 	int		_index(const T &p_v) const;
+	const std::string _repr() const;
 };
 
 }

@@ -8,6 +8,8 @@
  * Implementation of a generic adjacency matrix for internal use in a graph
  */
 
+#include <stdexcept>
+
 #include "AdjacencyMatrix.h"
 
 using namespace std;
@@ -329,26 +331,29 @@ bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
  * \brief Output function.
  */
 template<typename T>
-void Adjacency_Matrix<T>::display() const {
-	cout << "Matrix vertices number: " << nbVertices() << endl;
-	cout << "Matrix edges number: " << nbEdges() << endl;
-	cout << "Matrix composition:" << endl;
+const std::string Adjacency_Matrix<T>::_repr() const {
+	stringstream stream;
+
+	stream << "Matrix vertices number: " << nbVertices() << endl;
+	stream << "Matrix edges number: " << nbEdges() << endl;
+	stream << "Matrix composition:" << endl;
 	if (nbVertices() == 0) {
-		cout << "null";
+		stream << "null";
 	} else {
-		cout << "\t";
+		stream << "\t";
 	}
 	for (unsigned i = 0; i < m_elems.size(); i++) {
-		cout << m_elems[i] << "\t";
+		stream << m_elems[i] << "\t";
 	}
-	cout << endl;
+	stream << endl;
 	for (unsigned i = 0; i < m_matrix.size(); i++) {
-		cout << m_elems[i] << "\t";
+		stream << m_elems[i] << "\t";
 		for (unsigned j = 0; j < m_matrix[i].size(); j++) {
-			cout << m_matrix[i][j] << "\t";
+			stream << m_matrix[i][j] << "\t";
 		}
-		cout << endl;
+		stream << endl;
 	}
+	return stream.str();
 }
 
 
