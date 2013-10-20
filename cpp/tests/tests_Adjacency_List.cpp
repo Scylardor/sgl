@@ -32,8 +32,8 @@ void AdjacencyListTest::addVertices(int p_nbr, int p_from) {
 }
 
 TEST_F(AdjacencyListTest, constructor) {
-	EXPECT_EQ((int)list.nbVertices(), 0);
-	EXPECT_EQ((int)list.nbEdges(), 0);
+	EXPECT_TRUE(list.nbVertices() == 0);
+	EXPECT_TRUE(list.nbEdges() == 0);
 }
 
 TEST_F(AdjacencyListTest, LogicOnEmptylist) {
@@ -71,34 +71,34 @@ TEST_F(AdjacencyListTest, hasVertex) {
 
 TEST_F(AdjacencyListTest, vertexInDegree) {
 	list.addVertex(42);
-	EXPECT_EQ((int)list.vertexInDegree(42), 0);
+	EXPECT_TRUE(list.vertexInDegree(42) == 0);
 	list.addVertex(21);
 	list.addEdge(21, 42);
-	EXPECT_EQ((int)list.vertexInDegree(42), 1);
+	EXPECT_TRUE(list.vertexInDegree(42) == 1);
 	list.addVertex(84);
 	list.addEdge(84, 42);
-	EXPECT_EQ((int)list.vertexInDegree(42), 2);
+	EXPECT_TRUE(list.vertexInDegree(42) == 2);
 	list.deleteVertex(84);
-	EXPECT_EQ((int)list.vertexInDegree(42), 1);
+	EXPECT_TRUE(list.vertexInDegree(42) == 1);
 	list.deleteVertex(21);
-	EXPECT_EQ((int)list.vertexInDegree(42), 0);
+	EXPECT_TRUE(list.vertexInDegree(42) == 0);
 	list.deleteVertex(42);
 	EXPECT_THROW(list.vertexInDegree(42), logic_error);
 }
 
 TEST_F(AdjacencyListTest, vertexOutDegree) {
 	list.addVertex(42);
-	EXPECT_EQ((int)list.vertexOutDegree(42), 0);
+	EXPECT_TRUE(list.vertexOutDegree(42) == 0);
 	list.addVertex(21);
 	list.addEdge(42, 21);
-	EXPECT_EQ((int)list.vertexOutDegree(42), 1);
+	EXPECT_TRUE(list.vertexOutDegree(42) == 1);
 	list.addVertex(84);
 	list.addEdge(42, 84);
-	EXPECT_EQ((int)list.vertexOutDegree(42), 2);
+	EXPECT_TRUE(list.vertexOutDegree(42) == 2);
 	list.deleteVertex(84);
-	EXPECT_EQ((int)list.vertexOutDegree(42), 1);
+	EXPECT_TRUE(list.vertexOutDegree(42) == 1);
 	list.deleteVertex(21);
-	EXPECT_EQ((int)list.vertexOutDegree(42), 0);
+	EXPECT_TRUE(list.vertexOutDegree(42) == 0);
 	list.deleteVertex(42);
 	EXPECT_THROW(list.vertexOutDegree(42), logic_error);
 }
@@ -144,7 +144,7 @@ TEST_F(AdjacencyListTest, vertexNeighborhood) {
 	vector<int>::const_iterator found;
 
 	// Neighborhood of 42 should be 3 vertices
-	EXPECT_EQ((int)neighbors.size(), 3);
+	EXPECT_TRUE(neighbors.size() == 3);
 	for (int i = 43; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -157,7 +157,7 @@ TEST_F(AdjacencyListTest, vertexNeighborhood) {
 	// Let's test the "closed" parameter (should include the vertex itself in the vector)
 	neighbors = list.vertexNeighborhood(42, true);
 	for (unsigned i = 0; i < neighbors.size(); i++) cout << neighbors[i] << endl;
-	EXPECT_EQ((int)neighbors.size(), 4);
+	EXPECT_TRUE(neighbors.size() == 4);
 	for (int i = 42; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -173,13 +173,13 @@ TEST_F(AdjacencyListTest, vertexNeighborhood) {
 
 TEST_F(AdjacencyListTest, vertices) {
 	vector<int> vertices = list.vertices();
-	EXPECT_EQ((int)vertices.size(), 0);
+	EXPECT_TRUE(vertices.size() == 0);
 	addVertices(6, 42);
 	vertices = list.vertices();
 
 	vector<int>::const_iterator found;
 
-	EXPECT_EQ((int)vertices.size(), 6);
+	EXPECT_TRUE(vertices.size() == 6);
 	for (int i = 42; i < 48; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(vertices.begin(), vertices.end(), i);
@@ -250,11 +250,11 @@ TEST_F(AdjacencyListTest, display) {
 TEST_F(AdjacencyListTest, CopyConstructor) {
 	Adjacency_List<int>	copy(list);
 
-	EXPECT_EQ((int)copy.nbVertices(), 0);
-	EXPECT_EQ((int)copy.nbEdges(), 0);
+	EXPECT_TRUE(copy.nbVertices() == 0);
+	EXPECT_TRUE(copy.nbEdges() == 0);
 
 	addVertices(6, 42);
-	EXPECT_EQ((int)list.nbVertices(), 6);
+	EXPECT_TRUE(list.nbVertices() == 6);
 
 	Adjacency_List<int>	copy2(list);
 	vector<int> vertices = copy2.vertices();
@@ -272,11 +272,11 @@ TEST_F(AdjacencyListTest, AssignmentOperator) {
 	// from empty list to empty list
 	Adjacency_List<int>	copy;
 
-	EXPECT_EQ((int)list.nbVertices(), 0);
-	EXPECT_EQ((int)list.nbEdges(), 0);
+	EXPECT_TRUE(list.nbVertices() == 0);
+	EXPECT_TRUE(list.nbEdges() == 0);
 	copy = list;
-	EXPECT_EQ((int)copy.nbVertices(), 0);
-	EXPECT_EQ((int)copy.nbEdges(), 0);
+	EXPECT_TRUE(copy.nbVertices() == 0);
+	EXPECT_TRUE(copy.nbEdges() == 0);
 
 	// from full list to empty list
 	addVertices(6, 42);

@@ -32,8 +32,8 @@ void GraphTest::addVertices(int p_nbr, int p_from) {
 }
 
 TEST_F(GraphTest, constructor) {
-	EXPECT_EQ((int)theGraph.size(), 0);
-	EXPECT_EQ((int)theGraph.order(), 0);
+	EXPECT_TRUE(theGraph.size() == 0);
+	EXPECT_TRUE(theGraph.order() == 0);
 }
 
 TEST_F(GraphTest, LogicOnEmptyGraph) {
@@ -71,34 +71,34 @@ TEST_F(GraphTest, hasVertex) {
 
 TEST_F(GraphTest, vertexInDegree) {
 	theGraph.addVertex(42);
-	EXPECT_EQ((int)theGraph.vertexInDegree(42), 0);
+	EXPECT_TRUE(theGraph.vertexInDegree(42) == 0);
 	theGraph.addVertex(21);
 	theGraph.addEdge(21, 42);
-	EXPECT_EQ((int)theGraph.vertexInDegree(42), 1);
+	EXPECT_TRUE(theGraph.vertexInDegree(42) == 1);
 	theGraph.addVertex(84);
 	theGraph.addEdge(84, 42);
-	EXPECT_EQ((int)theGraph.vertexInDegree(42), 2);
+	EXPECT_TRUE(theGraph.vertexInDegree(42) == 2);
 	theGraph.deleteVertex(84);
-	EXPECT_EQ((int)theGraph.vertexInDegree(42), 1);
+	EXPECT_TRUE(theGraph.vertexInDegree(42) == 1);
 	theGraph.deleteVertex(21);
-	EXPECT_EQ((int)theGraph.vertexInDegree(42), 0);
+	EXPECT_TRUE(theGraph.vertexInDegree(42) == 0);
 	theGraph.deleteVertex(42);
 	EXPECT_THROW(theGraph.vertexInDegree(42), logic_error);
 }
 
 TEST_F(GraphTest, vertexOutDegree) {
 	theGraph.addVertex(42);
-	EXPECT_EQ((int)theGraph.vertexOutDegree(42), 0);
+	EXPECT_TRUE(theGraph.vertexOutDegree(42) == 0);
 	theGraph.addVertex(21);
 	theGraph.addEdge(42, 21);
-	EXPECT_EQ((int)theGraph.vertexOutDegree(42), 1);
+	EXPECT_TRUE(theGraph.vertexOutDegree(42) == 1);
 	theGraph.addVertex(84);
 	theGraph.addEdge(42, 84);
-	EXPECT_EQ((int)theGraph.vertexOutDegree(42), 2);
+	EXPECT_TRUE(theGraph.vertexOutDegree(42) == 2);
 	theGraph.deleteVertex(84);
-	EXPECT_EQ((int)theGraph.vertexOutDegree(42), 1);
+	EXPECT_TRUE(theGraph.vertexOutDegree(42) == 1);
 	theGraph.deleteVertex(21);
-	EXPECT_EQ((int)theGraph.vertexOutDegree(42), 0);
+	EXPECT_TRUE(theGraph.vertexOutDegree(42) == 0);
 	theGraph.deleteVertex(42);
 	EXPECT_THROW(theGraph.vertexOutDegree(42), logic_error);
 }
@@ -144,7 +144,7 @@ TEST_F(GraphTest, vertexNeighborhood) {
 	vector<int>::const_iterator found;
 
 	// Neighborhood of 42 should be 3 vertices
-	EXPECT_EQ((int)neighbors.size(), 3);
+	EXPECT_TRUE(neighbors.size() == 3);
 	for (int i = 43; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -156,7 +156,7 @@ TEST_F(GraphTest, vertexNeighborhood) {
 
 	// Let's test the "closed" parameter (should include the vertex itself in the vector)
 	neighbors = theGraph.vertexNeighborhood(42, true);
-	EXPECT_EQ((int)neighbors.size(), 4);
+	EXPECT_TRUE(neighbors.size() == 4);
 	for (int i = 42; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -172,13 +172,13 @@ TEST_F(GraphTest, vertexNeighborhood) {
 
 TEST_F(GraphTest, vertices) {
 	vector<int> vertices = theGraph.vertices();
-	EXPECT_EQ((int)vertices.size(), 0);
+	EXPECT_TRUE(vertices.size() == 0);
 	addVertices(6, 42);
 	vertices = theGraph.vertices();
 
 	vector<int>::const_iterator found;
 
-	EXPECT_EQ((int)vertices.size(), 6);
+	EXPECT_TRUE(vertices.size() == 6);
 	for (int i = 42; i < 48; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(vertices.begin(), vertices.end(), i);
@@ -268,11 +268,11 @@ TEST_F(GraphTest, areEqual) {
 TEST_F(GraphTest, CopyConstructor) {
 	graph<int>	copy(theGraph);
 
-	EXPECT_EQ((int)copy.size(), 0);
-	EXPECT_EQ((int)copy.order(), 0);
+	EXPECT_TRUE(copy.size() == 0);
+	EXPECT_TRUE(copy.order() == 0);
 
 	addVertices(6, 42);
-	EXPECT_EQ((int)theGraph.order(), 6);
+	EXPECT_TRUE(theGraph.order() == 6);
 
 	graph<int>	copy2(theGraph);
 	vector<int> vertices = copy2.vertices();
@@ -290,11 +290,11 @@ TEST_F(GraphTest, AssignmentOperator) {
 	// from empty graph to empty graph
 	graph<int>	copy;
 
-	EXPECT_EQ((int)theGraph.size(), 0);
-	EXPECT_EQ((int)theGraph.order(), 0);
+	EXPECT_TRUE(theGraph.size() == 0);
+	EXPECT_TRUE(theGraph.order() == 0);
 	copy = theGraph;
-	EXPECT_EQ((int)copy.size(), 0);
-	EXPECT_EQ((int)copy.order(), 0);
+	EXPECT_TRUE(copy.size() == 0);
+	EXPECT_TRUE(copy.order() == 0);
 
 	// from full graph to empty graph
 	addVertices(6, 42);

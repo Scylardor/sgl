@@ -33,8 +33,8 @@ void AdjacencyMatrixTest::addVertices(int p_nbr, int p_from) {
 }
 
 TEST_F(AdjacencyMatrixTest, constructor) {
-	EXPECT_EQ((int)matrix.nbVertices(), 0);
-	EXPECT_EQ((int)matrix.nbEdges(), 0);
+	EXPECT_TRUE(matrix.nbVertices() == 0);
+	EXPECT_TRUE(matrix.nbEdges() == 0);
 }
 
 TEST_F(AdjacencyMatrixTest, LogicOnEmptymatrix) {
@@ -72,34 +72,34 @@ TEST_F(AdjacencyMatrixTest, hasVertex) {
 
 TEST_F(AdjacencyMatrixTest, vertexInDegree) {
 	matrix.addVertex(42);
-	EXPECT_EQ((int)matrix.vertexInDegree(42), 0);
+	EXPECT_TRUE(matrix.vertexInDegree(42) == 0);
 	matrix.addVertex(21);
 	matrix.addEdge(21, 42);
-	EXPECT_EQ((int)matrix.vertexInDegree(42), 1);
+	EXPECT_TRUE(matrix.vertexInDegree(42) == 1);
 	matrix.addVertex(84);
 	matrix.addEdge(84, 42);
-	EXPECT_EQ((int)matrix.vertexInDegree(42), 2);
+	EXPECT_TRUE(matrix.vertexInDegree(42) == 2);
 	matrix.deleteVertex(84);
-	EXPECT_EQ((int)matrix.vertexInDegree(42), 1);
+	EXPECT_TRUE(matrix.vertexInDegree(42) == 1);
 	matrix.deleteVertex(21);
-	EXPECT_EQ((int)matrix.vertexInDegree(42), 0);
+	EXPECT_TRUE(matrix.vertexInDegree(42) == 0);
 	matrix.deleteVertex(42);
 	EXPECT_THROW(matrix.vertexInDegree(42), logic_error);
 }
 
 TEST_F(AdjacencyMatrixTest, vertexOutDegree) {
 	matrix.addVertex(42);
-	EXPECT_EQ((int)matrix.vertexOutDegree(42), 0);
+	EXPECT_TRUE(matrix.vertexOutDegree(42) == 0);
 	matrix.addVertex(21);
 	matrix.addEdge(42, 21);
-	EXPECT_EQ((int)matrix.vertexOutDegree(42), 1);
+	EXPECT_TRUE(matrix.vertexOutDegree(42) == 1);
 	matrix.addVertex(84);
 	matrix.addEdge(42, 84);
-	EXPECT_EQ((int)matrix.vertexOutDegree(42), 2);
+	EXPECT_TRUE(matrix.vertexOutDegree(42) == 2);
 	matrix.deleteVertex(84);
-	EXPECT_EQ((int)matrix.vertexOutDegree(42), 1);
+	EXPECT_TRUE(matrix.vertexOutDegree(42) == 1);
 	matrix.deleteVertex(21);
-	EXPECT_EQ((int)matrix.vertexOutDegree(42), 0);
+	EXPECT_TRUE(matrix.vertexOutDegree(42) == 0);
 	matrix.deleteVertex(42);
 	EXPECT_THROW(matrix.vertexOutDegree(42), logic_error);
 }
@@ -145,7 +145,7 @@ TEST_F(AdjacencyMatrixTest, vertexNeighborhood) {
 	vector<int>::const_iterator found;
 
 	// Neighborhood of 42 should be 3 vertices
-	EXPECT_EQ((int)neighbors.size(), 3);
+	EXPECT_TRUE(neighbors.size() == 3);
 	for (int i = 43; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -158,7 +158,7 @@ TEST_F(AdjacencyMatrixTest, vertexNeighborhood) {
 	// Let's test the "closed" parameter (should include the vertex itself in the vector)
 	neighbors = matrix.vertexNeighborhood(42, true);
 	for (unsigned i = 0; i < neighbors.size(); i++) cout << neighbors[i] << endl;
-	EXPECT_EQ((int)neighbors.size(), 4);
+	EXPECT_TRUE(neighbors.size() == 4);
 	for (int i = 42; i < 46; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(neighbors.begin(), neighbors.end(), i);
@@ -174,13 +174,13 @@ TEST_F(AdjacencyMatrixTest, vertexNeighborhood) {
 
 TEST_F(AdjacencyMatrixTest, vertices) {
 	vector<int> vertices = matrix.vertices();
-	EXPECT_EQ((int)vertices.size(), 0);
+	EXPECT_TRUE(vertices.size() == 0);
 	addVertices(6, 42);
 	vertices = matrix.vertices();
 
 	vector<int>::const_iterator found;
 
-	EXPECT_EQ((int)vertices.size(), 6);
+	EXPECT_TRUE(vertices.size() == 6);
 	for (int i = 42; i < 48; i++) {
 		// each of the concerned vertices should be in the vector
 		found = std::find(vertices.begin(), vertices.end(), i);
@@ -251,11 +251,11 @@ TEST_F(AdjacencyMatrixTest, display) {
 TEST_F(AdjacencyMatrixTest, CopyConstructor) {
 	Adjacency_Matrix<int>	copy(matrix);
 
-	EXPECT_EQ((int)copy.nbVertices(), 0);
-	EXPECT_EQ((int)copy.nbEdges(), 0);
+	EXPECT_TRUE(copy.nbVertices() == 0);
+	EXPECT_TRUE(copy.nbEdges() == 0);
 
 	addVertices(6, 42);
-	EXPECT_EQ((int)matrix.nbVertices(), 6);
+	EXPECT_TRUE(matrix.nbVertices() == 6);
 
 	Adjacency_Matrix<int>	copy2(matrix);
 	vector<int> vertices = copy2.vertices();
@@ -273,11 +273,11 @@ TEST_F(AdjacencyMatrixTest, AssignmentOperator) {
 	// from empty matrix to empty matrix
 	Adjacency_Matrix<int>	copy;
 
-	EXPECT_EQ((int)matrix.nbVertices(), 0);
-	EXPECT_EQ((int)matrix.nbEdges(), 0);
+	EXPECT_TRUE(matrix.nbVertices() == 0);
+	EXPECT_TRUE(matrix.nbEdges() == 0);
 	copy = matrix;
-	EXPECT_EQ((int)copy.nbVertices(), 0);
-	EXPECT_EQ((int)copy.nbEdges(), 0);
+	EXPECT_TRUE(copy.nbVertices() == 0);
+	EXPECT_TRUE(copy.nbEdges() == 0);
 
 	// from full matrix to empty matrix
 	addVertices(6, 42);
