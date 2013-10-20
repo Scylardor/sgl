@@ -1,6 +1,6 @@
 /**
- * \file SGLGraph.hpp
- * \brief SGLGraph implementation.
+ * \file graph.hpp
+ * \brief graph implementation.
  * \author Alexandre Baron
  * \version 0.1
  * \date 2013, October
@@ -12,7 +12,7 @@
 #include <sstream> // stringstream
 #include <stdexcept>
 
-#include "SGLGraph.h"
+#include "SGL.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ namespace SGL {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-SGLGraph<T>::SGLGraph() {
+graph<T>::graph() {
 }
 
 /**
@@ -36,7 +36,7 @@ SGLGraph<T>::SGLGraph() {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
+graph<T>::graph(const graph &p_src) {
 	_copyAdjacencyList(p_src);
 }
 
@@ -52,11 +52,11 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src) {
  * \exception logic_error if a vertex in filter vector isn't contained in the source graph
  */
 template<typename T>
-SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
+graph<T>::graph(const graph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
 	for (typename vector<T>::const_iterator vertex = p_filter.begin();
 			vertex != p_filter.end(); ++vertex) {
 		if (!p_src.hasVertex((*vertex))) {
-			throw logic_error("SGLGraph: a filter vector's vertex isn't in the source graph");
+			throw logic_error("graph: a filter vector's vertex isn't in the source graph");
 		}
 		addVertex((*vertex));
 	}
@@ -66,7 +66,7 @@ SGLGraph<T>::SGLGraph(const SGLGraph &p_src, const std::vector<T> &p_filter) { /
  *  \brief Destructor
  */
 template<typename T>
-SGLGraph<T>::~SGLGraph() {
+graph<T>::~graph() {
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
 		delete m_nodes[pos];
 	}
@@ -81,8 +81,8 @@ SGLGraph<T>::~SGLGraph() {
  * \return the current graph returns itself
  */
 template<typename T>
-const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
-	SGLGraph<T> temp(p_src);
+const graph<T> & graph<T>::operator =(const graph<T> &p_src) {
+	graph<T> temp(p_src);
 
 	std::swap(m_nodes, temp.m_nodes);
 	return *this;
@@ -98,7 +98,7 @@ const SGLGraph<T> & SGLGraph<T>::operator =(const SGLGraph<T> &p_src) {
  * \exception logic_error if the vertex already is in the graph
  */
 template<typename T>
-void SGLGraph<T>::addVertex(const T &p_v) {
+void graph<T>::addVertex(const T &p_v) {
 	if (hasVertex(p_v)) {
 		throw logic_error("addVertex: this vertex is already in the graph");
 	}
@@ -118,7 +118,7 @@ void SGLGraph<T>::addVertex(const T &p_v) {
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::addEdge(const T &p_v1, const T &p_v2) {
+void graph<T>::addEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -138,7 +138,7 @@ void SGLGraph<T>::addEdge(const T &p_v1, const T &p_v2) {
  * \exception logic_error if one of the two vertices isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
+void graph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -160,7 +160,7 @@ void SGLGraph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
  * \exception logic_error if the vertex isn't in the graph
  */
 template<typename T>
-void SGLGraph<T>::deleteVertex(const T &p_v) {
+void graph<T>::deleteVertex(const T &p_v) {
 	int index_s;
 
 	try {
@@ -182,7 +182,7 @@ void SGLGraph<T>::deleteVertex(const T &p_v) {
  * \return whether the graph contains this vertex or not
  */
 template<typename T>
-bool SGLGraph<T>::hasVertex(const T &p_v) const {
+bool graph<T>::hasVertex(const T &p_v) const {
 	bool isHere = true;
 
 	try {
@@ -203,7 +203,7 @@ bool SGLGraph<T>::hasVertex(const T &p_v) const {
  * \return whether the graph contains this edge or not
  */
 template<typename T>
-bool SGLGraph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
+bool graph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
 	bool isHere = true;
 	int index_s1, index_s2;
 
@@ -227,7 +227,7 @@ bool SGLGraph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
  * \return the number of edges in the graph
  */
 template<typename T>
-unsigned int SGLGraph<T>::size() const {
+unsigned int graph<T>::size() const {
 	unsigned int order = 0;
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
@@ -245,7 +245,7 @@ unsigned int SGLGraph<T>::size() const {
  * \return a vector containing all the vertices of the graph
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertices() const {
+std::vector<T> graph<T>::vertices() const {
 	vector<T> elems;
 
 	elems.reserve(m_nodes.size());
@@ -265,7 +265,7 @@ std::vector<T> SGLGraph<T>::vertices() const {
  * \return the number of edges to other vertices the vertex is the destination of
  */
 template<typename T>
-unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
+unsigned int graph<T>::vertexInDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexInDegree: the vertex isn't in the graph");
 	}
@@ -288,7 +288,7 @@ unsigned int SGLGraph<T>::vertexInDegree(const T &p_v) const {
  * \return the number of edges to other vertices the vertex is the source of
  */
 template<typename T>
-unsigned int SGLGraph<T>::vertexOutDegree(const T &p_v) const {
+unsigned int graph<T>::vertexOutDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
 	}
@@ -308,7 +308,7 @@ unsigned int SGLGraph<T>::vertexOutDegree(const T &p_v) const {
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
 template<typename T>
-std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+std::vector<T> graph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
 	}
@@ -354,7 +354,7 @@ std::vector<T> SGLGraph<T>::vertexNeighborhood(const T &p_v, bool p_closed) cons
  * \post The graph remains unchanged
  */
 template<typename T>
-const string SGLGraph<T>::_repr() const {
+const string graph<T>::_repr() const {
 	stringstream stream;
 
 	stream << "Number of vertices: " << order() << endl;
@@ -391,7 +391,7 @@ const string SGLGraph<T>::_repr() const {
  * \return A vector of pairs of elements organized as (source, destination)
  */
 template<typename T>
-vector<pair<T, T> > SGLGraph<T>::edges() const {
+vector<pair<T, T> > graph<T>::edges() const {
 	vector<pair<T, T> > edges;
 	for (unsigned int i = 0; i < m_nodes.size(); i++) {
 		Node *cur = m_nodes[i];
@@ -411,7 +411,7 @@ vector<pair<T, T> > SGLGraph<T>::edges() const {
  * \return whether the two graphs are structurally equal or not
  */
 template<typename T>
-bool SGLGraph<T>::equals(const SGLGraph &p_g2) const {
+bool graph<T>::equals(const graph &p_g2) const {
 	bool areEqual = true;
 
 	if ((order() != p_g2.order()) || (size() != p_g2.size())) {
@@ -446,7 +446,7 @@ bool SGLGraph<T>::equals(const SGLGraph &p_g2) const {
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
+void graph<T>::_copyAdjacencyList(const graph &p_src) {
 	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
 		addVertex(p_src.m_nodes[pos]->m_data);
 	}
@@ -468,7 +468,7 @@ void SGLGraph<T>::_copyAdjacencyList(const SGLGraph &p_src) {
  * \return the index in the adjacency list of the given vertex's node
  */
 template<typename T>
-int SGLGraph<T>::_index(const T &p_v) const {
+int graph<T>::_index(const T &p_v) const {
 	int index = -1;
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {

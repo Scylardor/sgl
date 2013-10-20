@@ -1,15 +1,15 @@
 /**
- * \file SGLGraph.h
- * \brief Class of the generic template class SGLGraph
+ * \file graph.h
+ * \brief Class of the generic template class graph
  * \author Alexandre Baron
  * \version 0.1
  * \date 2013, October
  *
- * SGLGraph definition.
+ * graph definition.
  */
 
-#ifndef _SGLGRAPH_H
-#define _SGLGRAPH_H
+#ifndef _graph_H
+#define _graph_H
 
 #include <utility> // pair
 #include <vector>
@@ -17,7 +17,7 @@
 
 namespace SGL {
 /**
- * \class SGLGraph
+ * \class graph
  *
  * \brief Class representing a generic graph
  * The goal of this class is to implement a graph as generic as it can be.
@@ -27,16 +27,16 @@ namespace SGL {
  * - allowing of choosing the internal representation of data (adjacency matrix, adjacency list, edge list...)
  */
 template<typename T>
-class SGLGraph {
+class graph {
 public:
 	// Constructors
-	explicit SGLGraph();
-	SGLGraph(const SGLGraph& p_src);
-	SGLGraph(const SGLGraph& p_src, const std::vector<T>& p_filter);
+	explicit graph();
+	graph(const graph& p_src);
+	graph(const graph& p_src, const std::vector<T>& p_filter);
 	// Destructor
-	~SGLGraph();
+	~graph();
 	// Operator =
-	const SGLGraph& operator =(const SGLGraph &p_src);
+	const graph& operator =(const graph &p_src);
 
 	// Getters (const)
 	/**
@@ -79,16 +79,16 @@ public:
 	void deleteEdge(const T&, const T&);
 
 	// Others
-	bool equals(const SGLGraph &p_g2) const;
+	bool equals(const graph &p_g2) const;
 
 	/**
 	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.
 	 * \param[in] p_g2 the second graph
 	 * \return whether the two graphs are structurally equal or not
 	 */
-	inline bool operator==(const SGLGraph &p_g2) const { return equals(p_g2); }
+	inline bool operator==(const graph &p_g2) const { return equals(p_g2); }
 
-	friend inline std::ostream &operator<<(std::ostream &p_stream, const SGLGraph &p_graph) {
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const graph &p_graph) {
 		p_stream << p_graph._repr(); return p_stream;
 	}
 
@@ -106,7 +106,7 @@ private:
 	};
 	std::vector<Node *> m_nodes; /*!< internal container for the adjacency list nodes */
 
-	void	_copyAdjacencyList(const SGLGraph &p_src);
+	void	_copyAdjacencyList(const graph &p_src);
 	int		_index(const T &p_v) const;
 	const std::string _repr() const;
 };
@@ -115,6 +115,6 @@ private:
 
 #include "AdjacencyMatrix.h"
 #include "AdjacencyList.h"
-#include "SGLGraph.hpp"
+#include "SGL.hpp"
 
 #endif
