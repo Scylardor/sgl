@@ -15,6 +15,7 @@
 #include <string>
 
 #include "AbstractGraph.h"
+#include "components.h"
 
 namespace SGL {
 /**
@@ -26,7 +27,7 @@ namespace SGL {
 template <typename T>
 class Adjacency_Matrix : public AbstractGraph<T> {
 public:
-	Adjacency_Matrix();
+	Adjacency_Matrix(configuration p_f = 0);
 	~Adjacency_Matrix();
 
 	// Getters (const)

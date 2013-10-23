@@ -20,7 +20,7 @@ namespace SGL {
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_Matrix<T>::Adjacency_Matrix() {
+Adjacency_Matrix<T>::Adjacency_Matrix(configuration p_flags) {
 }
 
 /**

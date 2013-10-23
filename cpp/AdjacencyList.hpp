@@ -16,7 +16,7 @@ namespace SGL {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_List<T>::Adjacency_List(int p_flags)
+Adjacency_List<T>::Adjacency_List(configuration p_flags)
 {
 }
 

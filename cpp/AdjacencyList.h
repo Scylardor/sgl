@@ -12,6 +12,7 @@
 #include <list>
 
 #include "AbstractGraph.h"
+#include "components.h"
 
 namespace SGL {
 
@@ -19,7 +20,7 @@ template<typename T>
 class Adjacency_List : public AbstractGraph<T> {
 public:
 	// Constructors
-	explicit Adjacency_List(int p_flags = 0);
+	explicit Adjacency_List(configuration p_flags = 0);
 	Adjacency_List(const Adjacency_List& p_src);
 	Adjacency_List(const Adjacency_List& p_src, const std::vector<T>& p_filter);
 	// Destructor
