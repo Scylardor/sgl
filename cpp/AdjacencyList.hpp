@@ -4,7 +4,7 @@
 //! \version 0.1
 //! \date Oct 19, 2013
 
-#include "AdjacencyList.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -16,7 +16,8 @@ namespace SGL {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_List<T>::Adjacency_List() {
+Adjacency_List<T>::Adjacency_List(int p_flags)
+{
 }
 
 /**
@@ -27,7 +28,8 @@ Adjacency_List<T>::Adjacency_List() {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src) {
+Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src)
+{
 	_copyAdjacencyList(p_src);
 }
 

@@ -12,6 +12,9 @@
 #define _ADJACENCYMATRIX_H
 
 #include <vector>
+#include <string>
+
+#include "AbstractGraph.h"
 
 namespace SGL {
 /**
@@ -20,10 +23,10 @@ namespace SGL {
  * \brief Class representing an adjacency matrix
  * for internal use by a graph
  */
-template<typename T>
-class Adjacency_Matrix {
+template <typename T>
+class Adjacency_Matrix : public AbstractGraph<T> {
 public:
-	Adjacency_Matrix(unsigned p_size = 0);
+	Adjacency_Matrix();
 	~Adjacency_Matrix();
 
 	// Getters (const)
@@ -46,7 +49,29 @@ public:
 	 */
 	inline unsigned nbVertices() const { return m_elems.size(); }
 
+	/**
+	 * \brief Returns the number of edges in the list
+	 * \return the number of edges in the list
+	 */
 	inline unsigned nbEdges() const { return edges().size(); }
+
+	/**
+	 * \brief Alias of the nbVertices method
+	 * "order" is the mathematical term for "number of vertices"
+	 * \return the number of vertices in the list
+	 */
+	inline unsigned int order() const {
+		return nbVertices();
+	}
+
+	/**
+	 * \brief Alias of the nbEdges method
+	 * "size" is the mathematical term for "number of edges" (not to be mistaken with order, the number of vertices)
+	 * \return the number of edges in the list
+	 */
+	inline unsigned int size() const {
+		return nbEdges();
+	}
 
 	bool hasVertex(const T &) const;
 	unsigned vertexInDegree(const T &) const;

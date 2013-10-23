@@ -24,8 +24,9 @@ namespace SGL {
  *  \pre Enough memory available
  *  \exception bad_alloc in case of insufficient memory
  */
-template<typename T>
-graph<T>::graph() {
+template<typename T, class Model>
+graph<T, Model>::graph() {
+	m_model = new Model();
 }
 
 /**
@@ -35,8 +36,8 @@ graph<T>::graph() {
  *  \param[in] p_src the graph to copy
  *  \exception bad_alloc in case of insufficient memory
  */
-template<typename T>
-graph<T>::graph(const graph &p_src) {
+template<typename T, class Model>
+graph<T, Model>::graph(const graph &p_src) {
 	_copyAdjacencyList(p_src);
 }
 
@@ -51,8 +52,8 @@ graph<T>::graph(const graph &p_src) {
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if a vertex in filter vector isn't contained in the source graph
  */
-template<typename T>
-graph<T>::graph(const graph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
+template<typename T, class Model>
+graph<T, Model>::graph(const graph &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
 	for (typename vector<T>::const_iterator vertex = p_filter.begin();
 			vertex != p_filter.end(); ++vertex) {
 		if (!p_src.hasVertex((*vertex))) {
@@ -65,11 +66,9 @@ graph<T>::graph(const graph &p_src, const std::vector<T> &p_filter) { // the exp
 /**
  *  \brief Destructor
  */
-template<typename T>
-graph<T>::~graph() {
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		delete m_nodes[pos];
-	}
+template<typename T, class Model>
+graph<T, Model>::~graph() {
+	delete m_model;
 }
 
 /**
@@ -80,11 +79,11 @@ graph<T>::~graph() {
  * \exception bad_alloc in case of insufficient memory
  * \return the current graph returns itself
  */
-template<typename T>
-const graph<T> & graph<T>::operator =(const graph<T> &p_src) {
-	graph<T> temp(p_src);
+template<typename T, class Model>
+const graph<T, Model> & graph<T, Model>::operator =(const graph<T, Model> &p_src) {
+	graph<T, Model> temp(p_src);
 
-	std::swap(m_nodes, temp.m_nodes);
+	std::swap(m_model, temp.m_model);
 	return *this;
 }
 
@@ -97,8 +96,8 @@ const graph<T> & graph<T>::operator =(const graph<T> &p_src) {
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if the vertex already is in the graph
  */
-template<typename T>
-void graph<T>::addVertex(const T &p_v) {
+template<typename T, class Model>
+void graph<T, Model>::addVertex(const T &p_v) {
 	if (hasVertex(p_v)) {
 		throw logic_error("addVertex: this vertex is already in the graph");
 	}
@@ -117,8 +116,8 @@ void graph<T>::addVertex(const T &p_v) {
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if one of the two vertices isn't in the graph
  */
-template<typename T>
-void graph<T>::addEdge(const T &p_v1, const T &p_v2) {
+template<typename T, class Model>
+void graph<T, Model>::addEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -137,8 +136,8 @@ void graph<T>::addEdge(const T &p_v1, const T &p_v2) {
  * \post The graph counts one less edge
  * \exception logic_error if one of the two vertices isn't in the graph
  */
-template<typename T>
-void graph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
+template<typename T, class Model>
+void graph<T, Model>::deleteEdge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -159,8 +158,8 @@ void graph<T>::deleteEdge(const T &p_v1, const T &p_v2) {
  * \post The graph counts one less vertex
  * \exception logic_error if the vertex isn't in the graph
  */
-template<typename T>
-void graph<T>::deleteVertex(const T &p_v) {
+template<typename T, class Model>
+void graph<T, Model>::deleteVertex(const T &p_v) {
 	int index_s;
 
 	try {
@@ -181,8 +180,8 @@ void graph<T>::deleteVertex(const T &p_v) {
  * \post The graph remains unchanged
  * \return whether the graph contains this vertex or not
  */
-template<typename T>
-bool graph<T>::hasVertex(const T &p_v) const {
+template<typename T, class Model>
+bool graph<T, Model>::hasVertex(const T &p_v) const {
 	bool isHere = true;
 
 	try {
@@ -202,8 +201,8 @@ bool graph<T>::hasVertex(const T &p_v) const {
  * \exception logic_error if one of the two vertices isn't in the graph
  * \return whether the graph contains this edge or not
  */
-template<typename T>
-bool graph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
+template<typename T, class Model>
+bool graph<T, Model>::hasEdge(const T &p_v1, const T &p_v2) const {
 	bool isHere = true;
 	int index_s1, index_s2;
 
@@ -226,8 +225,8 @@ bool graph<T>::hasEdge(const T &p_v1, const T &p_v2) const {
  * \post The graph remains unchanged
  * \return the number of edges in the graph
  */
-template<typename T>
-unsigned int graph<T>::size() const {
+template<typename T, class Model>
+unsigned int graph<T, Model>::size() const {
 	unsigned int order = 0;
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
@@ -244,8 +243,8 @@ unsigned int graph<T>::size() const {
  * \exception bad_alloc in case of insufficient memory
  * \return a vector containing all the vertices of the graph
  */
-template<typename T>
-std::vector<T> graph<T>::vertices() const {
+template<typename T, class Model>
+std::vector<T> graph<T, Model>::vertices() const {
 	vector<T> elems;
 
 	elems.reserve(m_nodes.size());
@@ -264,8 +263,8 @@ std::vector<T> graph<T>::vertices() const {
  * \exception logic_error if the vertex isn't in the graph
  * \return the number of edges to other vertices the vertex is the destination of
  */
-template<typename T>
-unsigned int graph<T>::vertexInDegree(const T &p_v) const {
+template<typename T, class Model>
+unsigned int graph<T, Model>::vertexInDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexInDegree: the vertex isn't in the graph");
 	}
@@ -287,8 +286,8 @@ unsigned int graph<T>::vertexInDegree(const T &p_v) const {
  * \exception logic_error if the vertex isn't in the graph
  * \return the number of edges to other vertices the vertex is the source of
  */
-template<typename T>
-unsigned int graph<T>::vertexOutDegree(const T &p_v) const {
+template<typename T, class Model>
+unsigned int graph<T, Model>::vertexOutDegree(const T &p_v) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
 	}
@@ -307,8 +306,8 @@ unsigned int graph<T>::vertexOutDegree(const T &p_v) const {
  * \exception logic_error if the vertex isn't in the graph
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
-template<typename T>
-std::vector<T> graph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+template<typename T, class Model>
+std::vector<T> graph<T, Model>::vertexNeighborhood(const T &p_v, bool p_closed) const {
 	if (!hasVertex(p_v)) {
 		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
 	}
@@ -353,8 +352,8 @@ std::vector<T> graph<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
  *  	 in order to be printed out by the function
  * \post The graph remains unchanged
  */
-template<typename T>
-const string graph<T>::_repr() const {
+template<typename T, class Model>
+const string graph<T, Model>::_repr() const {
 	stringstream stream;
 
 	stream << "Number of vertices: " << order() << endl;
@@ -390,8 +389,8 @@ const string graph<T>::_repr() const {
  * \exception bad_alloc in case of insufficient memory
  * \return A vector of pairs of elements organized as (source, destination)
  */
-template<typename T>
-vector<pair<T, T> > graph<T>::edges() const {
+template<typename T, class Model>
+vector<pair<T, T> > graph<T, Model>::edges() const {
 	vector<pair<T, T> > edges;
 	for (unsigned int i = 0; i < m_nodes.size(); i++) {
 		Node *cur = m_nodes[i];
@@ -410,8 +409,8 @@ vector<pair<T, T> > graph<T>::edges() const {
  * \param[in] p_g2 the second graph
  * \return whether the two graphs are structurally equal or not
  */
-template<typename T>
-bool graph<T>::equals(const graph &p_g2) const {
+template<typename T, class Model>
+bool graph<T, Model>::equals(const graph &p_g2) const {
 	bool areEqual = true;
 
 	if ((order() != p_g2.order()) || (size() != p_g2.size())) {
@@ -445,8 +444,8 @@ bool graph<T>::equals(const graph &p_g2) const {
  * \post The contents of the source graph (vertices and edges) are fully copied
  * \exception bad_alloc in case of insufficient memory
  */
-template<typename T>
-void graph<T>::_copyAdjacencyList(const graph &p_src) {
+template<typename T, class Model>
+void graph<T, Model>::_copyAdjacencyList(const graph &p_src) {
 	for (unsigned int pos = 0; pos < p_src.order(); pos++) {
 		addVertex(p_src.m_nodes[pos]->m_data);
 	}
@@ -467,8 +466,8 @@ void graph<T>::_copyAdjacencyList(const graph &p_src) {
  * \exception logic_error the vertex isn't in the graph
  * \return the index in the adjacency list of the given vertex's node
  */
-template<typename T>
-int graph<T>::_index(const T &p_v) const {
+template<typename T, class Model>
+int graph<T, Model>::_index(const T &p_v) const {
 	int index = -1;
 
 	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {

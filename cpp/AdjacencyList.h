@@ -8,15 +8,18 @@
 #define ADJACENCYLIST_H_
 
 #include <vector>
+#include <string>
 #include <list>
+
+#include "AbstractGraph.h"
 
 namespace SGL {
 
-template <typename T>
-class Adjacency_List {
+template<typename T>
+class Adjacency_List : public AbstractGraph<T> {
 public:
 	// Constructors
-	explicit Adjacency_List();
+	explicit Adjacency_List(int p_flags = 0);
 	Adjacency_List(const Adjacency_List& p_src);
 	Adjacency_List(const Adjacency_List& p_src, const std::vector<T>& p_filter);
 	// Destructor
@@ -50,10 +53,28 @@ public:
 	}
 
 	/**
+	 * \brief Alias of the nbVertices method
+	 * "order" is the mathematical term for "number of vertices"
+	 * \return the number of vertices in the list
+	 */
+	inline unsigned int order() const {
+		return m_nodes.size();
+	}
+
+	/**
 	 * \brief Returns the number of edges in the list
 	 * \return the number of edges in the list
 	 */
 	inline unsigned int nbEdges() const {
+		return edges().size();
+	}
+
+	/**
+	 * \brief Alias of the nbEdges method
+	 * "size" is the mathematical term for "number of edges" (not to be mistaken with order, the number of vertices)
+	 * \return the number of edges in the list
+	 */
+	inline unsigned int size() const {
 		return edges().size();
 	}
 
@@ -82,9 +103,13 @@ public:
 	 */
 	inline bool operator==(const Adjacency_List &p_g2) { return equals(p_g2); }
 
-	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_List &p_list) {
-		p_stream << p_list._repr(); return p_stream;
+
+	friend inline std::ostream &operator<<(std::ostream &p_stream,
+			const Adjacency_List &p_graph) {
+		p_stream << p_graph._repr();
+		return p_stream;
 	}
+
 
 private:
 	/**
@@ -104,6 +129,7 @@ private:
 	int		_index(const T &p_v) const;
 	const std::string _repr() const;
 };
+
 
 }
 

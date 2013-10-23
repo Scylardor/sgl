@@ -10,8 +10,6 @@
 
 #include <stdexcept>
 
-#include "AdjacencyMatrix.h"
-
 using namespace std;
 
 namespace SGL {
@@ -22,11 +20,7 @@ namespace SGL {
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_Matrix<T>::Adjacency_Matrix(unsigned int p_size) {
-	if (p_size != 0) {
-		m_elems.reserve(p_size);
-		m_matrix.reserve(p_size);
-	}
+Adjacency_Matrix<T>::Adjacency_Matrix() {
 }
 
 /**
@@ -331,7 +325,7 @@ bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
  * \brief Output function.
  */
 template<typename T>
-const std::string Adjacency_Matrix<T>::_repr() const {
+const string Adjacency_Matrix<T>::_repr() const {
 	stringstream stream;
 
 	stream << "Matrix vertices number: " << nbVertices() << endl;
