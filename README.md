@@ -51,4 +51,4 @@ Remember, everything in the project is inside the SGL namespace.
 Documentation
 -------------
 
-The project's documentation is generated with Doxygen. The most up-to-date version can be found on the [project's GitHub page](http://www.scylardor.github.io/sgl).
+The project's documentation is generated with Doxygen. The most up-to-date version can be found on the [project's GitHub page](http://scylardor.github.io/sgl/).
