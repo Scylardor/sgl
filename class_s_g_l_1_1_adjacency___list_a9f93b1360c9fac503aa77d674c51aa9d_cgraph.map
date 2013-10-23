@@ -1,0 +1,7 @@
+<map id="SGL::Adjacency_List::equals" name="SGL::Adjacency_List::equals">
+<area shape="rect" id="node3" href="$class_s_g_l_1_1_adjacency___list.html#a164c853d47759043cf8cac965f43880d" title="verifies that an edge is in the graph" alt="" coords="197,5,341,49"/>
+<area shape="rect" id="node5" href="$class_s_g_l_1_1_adjacency___list.html#aeeef5259bf446ee64e71733816774f4d" title="verifies that a vertex is in the graph" alt="" coords="197,71,341,115"/>
+<area shape="rect" id="node7" href="$class_s_g_l_1_1_adjacency___list.html#ac1a7bf054e733230ea5e402f791c491c" title="Returns the number of edges in the list." alt="" coords="197,138,341,182"/>
+<area shape="rect" id="node11" href="$class_s_g_l_1_1_adjacency___list.html#a43ebdc64c8d0cf18e7ff6e924f702ad2" title="Returns the number of vertices in the list." alt="" coords="197,205,341,249"/>
+<area shape="rect" id="node9" href="$class_s_g_l_1_1_adjacency___list.html#a4c710b379e4fce90a4b92d2ce2cff6a8" title="Lists all the edges in the graph." alt="" coords="389,138,533,182"/>
+</map>
