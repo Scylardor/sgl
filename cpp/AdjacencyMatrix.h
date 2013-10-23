@@ -1,6 +1,6 @@
 /**
  * \file AdjacencyMatrix.h
- * \brief Class of the generic template class adjacency_matrix used to parameterize the SGLGraph class
+ * \brief Class of the generic template class Adjacency_Matrix inheriting from AbstractGraph
  * \author Alexandre Baron
  * \version 0.1
  * \date 2013, October
@@ -19,7 +19,7 @@
 
 namespace SGL {
 /**
- * \class adjacency_matrix
+ * \class Adjacency_Matrix
  *
  * \brief Class representing an adjacency matrix
  * for internal use by a graph

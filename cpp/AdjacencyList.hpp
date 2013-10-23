@@ -13,6 +13,7 @@ namespace SGL {
 /**
  *  \brief Constructor
  *  \pre Enough memory available
+ *  \param[in] p_flags the configuration flags of the graph
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>

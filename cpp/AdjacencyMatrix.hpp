@@ -16,7 +16,7 @@ namespace SGL {
 
 /**
  * \brief Default constructor. Reserves size for vertices if provided
- * \param[in] p_size the size to reserve in the vector
+ * \param[in] p_flags the configuration flags of the graph
  * \exception bad_alloc in case of insufficient memory
  */
 template<typename T>

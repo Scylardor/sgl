@@ -16,7 +16,12 @@
 
 namespace SGL {
 
-
+/** \typedef typedef enum Configuration
+ *  \brief Definition of the graph configuration flags
+ *  so they can be bitwise-or'd at a graph creation to specify its configuration
+ *  (weighted or not, directed or not...)
+ *  The ADJACENCY_* flags aren't meant to do something yet, maybe later.
+ */
 typedef enum Configuration {
 	UNDIRECTED = 1,
 	DIRECTED = 2,
