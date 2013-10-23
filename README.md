@@ -1,44 +1,54 @@
 SGL - Simple Graph Library
 ==========================
 
-While studying the graph theory in class, I found the required implemention didn't go far enough.
+Introduction
+------------
 
-So I decided to create my own small graph library. It's willing to be greatly inspired by the Boost Graph Library.
+SGL is a graph library greatly inspired by the BGL (Boost Graph Library).
 
-It should propose some famous algorithms:
-* Breadth-first search and depth-first search
-* Warshall
-* Floyd/Warshall
-* Dijkstra
-* Bellman-Ford
-* Kruskal, Prim
-* Ford-Fulkerson
-* A*...
+Emerging from a school project, it doesn't really pretend to be as complete nor fast than Boost's, but it focuses on being at least simple to use.
 
-A GraphViz graph generation utility permitting to create images of the produced graphs also would be great.
+The module also aims to provide some standard graph theory algorithms, like:
+- breadth-first search and depth-first search
+- Warshall's transitive closure algorithm
+- some shortest-path finding algorithms like Floyd-Warshall, Dijkstra, Bellman-Ford
+- connectivity finding algorithms
+- minimum spanning tree algorithms like Kruskal-Prim's, etc.
+- and more !
 
-We're not there yet, but I hope it will be someday.
+A graphic generator using for example GraphViz tools may also be implemented.
+
 
 Components
 ----------
 
-At the moment, the library itself only uses the standard library. No specific dependencies are needed.
+At the moment, two data structures are available for use with the SGL
+- Adjacency_List : a graph internally implemented by an adjacency list
+- Adjacency_Matrix : a graph internally implemented by an adjacency matrix
 
-For now, it merely manages a (really) simple oriented graph, using internally an adjacency list. This cannot be changed yet.
+This in order to let users choose what they find the more appropriate for their use case.
 
-But I'd like to make it highly parametrizable, mainly:
-* by letting the user choose the internal structure to use (adjacency list or adjacency matrix), depending on what he needs
-* by letting vertices and edges hold a lot of possible properties and maybe facilitate their customization 
+For example, an adjacency matrix is better indicated for a graph with a known big number of edges.
 
-On the other hand, the documentation is made with [Doxygen](http://www.stack.nl/~dimitri/doxygen/) so you'll need it if you want to build it by yourself. I provide the doxyfile used to generate it.
+On the other hand, for graphs of variable, but relatively small size, an adjacency list is commonly a good choice.
 
-And to build the unit tests, you'll need the [Google Test](http://code.google.com/p/googletest/) framework.
+
+More types of implementation will maybe come in time.
+
+Actually, since they all inherit from an abstract base class AbstractGraph, it should be possible for any user to create his own custom graph class inheriting the base class, given it implements the required methods. 
+
 
 How to build it
 ---------------
 
-You don't have to since SGL is a header-only library.
+You don't have to, since SGL is a header-only library.
 
-Just take SGL.h and SGL.hpp with your source files, and include SGL.h.
+To use it, just take the "sgl" directory in your project directory, make your linker aware that "sgl" is now an include directory, and include SGL.h in your source files. You're now ready to go !
 
-All the project is inside the SGL namespace.
+Remember, everything in the project is inside the SGL namespace.
+
+
+Documentation
+-------------
+
+The project's documentation is generated with Doxygen. The most up-to-date version can be found on the [project's GitHub page](www.scylardor.github.io/sgl).
