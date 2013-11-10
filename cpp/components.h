@@ -36,5 +36,4 @@ typedef int configuration;
 
 }
 
-
 #endif /* COMPONENTS_H_ */

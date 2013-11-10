@@ -6,23 +6,16 @@ Introduction
 
 SGL is a graph library greatly inspired by the BGL (Boost Graph Library).
 
-Emerging from a school project, it doesn't really pretend to be as complete nor fast than Boost's, but it focuses on being at least simple to use.
-
-The module also aims to provide some standard graph theory algorithms, like:
-- breadth-first search and depth-first search
-- Warshall's transitive closure algorithm
-- some shortest-path finding algorithms like Floyd-Warshall, Dijkstra, Bellman-Ford
-- connectivity finding algorithms
-- minimum spanning tree algorithms like Kruskal-Prim's, etc.
-- and more !
-
-A graphic generator using for example GraphViz tools may also be implemented.
-
+This is a project driven by my need to have a generic graph tool in C++, without using Boost's. May it be useful to other people as well !
 
 Components
 ----------
 
-At the moment, two data structures are available for use with the SGL
+The SGL implements a collection of graph implementations and generic algorithms to work with.
+
+The configuration of each graph can easily be modified by a set of flags : directed, weighted graphs...
+
+At the moment two data structures are available for use with the SGL:
 - Adjacency_List : a graph internally implemented by an adjacency list
 - Adjacency_Matrix : a graph internally implemented by an adjacency matrix
 
@@ -32,21 +25,18 @@ For example, an adjacency matrix is better indicated for a graph with a known bi
 
 On the other hand, for graphs of variable, but relatively small size, an adjacency list is commonly a good choice.
 
-
-More types of implementation will maybe come in time.
-
-Actually, since they all inherit from an abstract base class AbstractGraph, it should be possible for any user to create his own custom graph class inheriting the base class, given it implements the required methods. 
+More features may come in time.
 
 
-How to build it
+How to use it
 ---------------
 
-You don't have to, since SGL is a header-only library.
+SGL is a **header-only library**, so you don't need to compile anything beforehand.
 
-To use it, just take the "sgl" directory in your project directory, make your linker aware that "sgl" is now an include directory, and include SGL.h in your source files. You're now ready to go !
+To use it, just clone the repository in your project, make your compiler aware that the SGL directory is now an include directory, and include SGL.h in your source files. You're now ready to go !
 
+**Also**, if you're interested in just using one class of the library and have to keep a low compilation time, since every class of the library is a separate module, you can just import the header of this class (e.g. : AdjacencyMatrix.h) 
 Remember, everything in the project is inside the SGL namespace.
-
 
 Documentation
 -------------

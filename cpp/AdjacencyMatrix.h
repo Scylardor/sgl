@@ -29,6 +29,7 @@ template <typename T>
 class Adjacency_Matrix : public AbstractGraph<T> {
 public:
 	Adjacency_Matrix(configuration p_f = 0);
+	Adjacency_Matrix(const Adjacency_Matrix &);
 	~Adjacency_Matrix() { delete m_matrix; }
 
 	////////////////////////////////////////////////////////////////
