@@ -31,25 +31,14 @@ public:
 	Adjacency_Matrix(configuration p_f = 0);
 	~Adjacency_Matrix() { delete m_matrix; }
 
+	////////////////////////////////////////////////////////////////
 	// Getters (const)
-
-	/**
-	 * \brief \brief Tells if a vertex is a source (no edges coming to it = in-degree 0)
-	 * \return (boolean) whether the vertex is a source or not
-	 */
-	inline bool vertexIsSource(const T &p_v) const { return (vertexInDegree(p_v) == 0); }
-
-	/**
-	 * \brief Tells if a vertex is a sink (no edges starting from it = out-degree = 0)
-	 * \return (boolean) whether the vertex is a sink or not
-	 */
-	inline bool vertexIsSink(const T &p_v) const { return (vertexOutDegree(p_v) == 0); }
-
+	////////////////////////////////////////////////////////////////
 	/**
 	 * \brief Returns the number of vertices in the matrix
 	 * \return the number of vertices in the matrix
 	 */
-	inline unsigned nbVertices() const { return m_elems.size(); }
+	inline unsigned nbVertices() const { return this->m_nbVertices; }
 
 	/**
 	 * \brief Returns the number of edges in the list
@@ -72,6 +61,8 @@ public:
 	inline unsigned int size() const { return nbEdges(); }
 
 	bool hasVertex(const T &) const;
+	bool vertexIsSource(const T &) const;
+	bool vertexIsSink(const T &) const;
 	unsigned vertexInDegree(const T &) const;
 	unsigned vertexOutDegree(const T &) const;
 	std::vector<T> vertexNeighborhood(const T&, bool p_closed = false) const;
@@ -79,13 +70,17 @@ public:
 	bool hasEdge(const T &, const T &) const;
 	std::vector<std::pair<T, T> > edges() const;
 
+	////////////////////////////////////////////////////////////////
 	// Setters (mutators)
+	////////////////////////////////////////////////////////////////
 	void addVertex(const T &);
 	void deleteVertex(const T &);
 	void addEdge(const T&, const T&);
 	void deleteEdge(const T&, const T&);
 
+	////////////////////////////////////////////////////////////////
 	// Others
+	////////////////////////////////////////////////////////////////
 	bool operator==(const Adjacency_Matrix &p_rhs) const;
 
 	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_Matrix &p_matrix) { p_stream << p_matrix._repr(); return p_stream; }
@@ -148,7 +143,7 @@ private:
 	std::vector<T> m_elems; /*!< all the vertices */
 	IMatrix *m_matrix; /*!< the adjacency matrix itself */
 
-	int _index(const T &p_v) const;
+	unsigned _index(const T &p_v) const;
 	const std::string _repr() const;
 };
 

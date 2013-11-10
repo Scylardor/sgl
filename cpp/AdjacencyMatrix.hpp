@@ -84,7 +84,7 @@ bool Adjacency_Matrix<T>::hasEdge(const T &p_v1, const T &p_v2) const {
  */
 template<typename T>
 unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
-	int index_s;
+	unsigned index_s;
 	unsigned indegree = 0;
 
 	try {
@@ -95,6 +95,10 @@ unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
 	for (unsigned i = 0; i < m_elems.size(); i++) {
 		if (m_matrix->hasEdge(i, index_s)) {
 			indegree++;
+			// if the graph is undirected: a loop counts twice
+			if (i == index_s && (this->m_config & UNDIRECTED)) {
+				indegree++;
+			}
 		}
 	}
 	return indegree;
@@ -110,7 +114,7 @@ unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
  */
 template<typename T>
 unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_v) const {
-	int index_s;
+	unsigned index_s;
 	unsigned outdegree = 0;
 
 	try {
@@ -121,10 +125,43 @@ unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_v) const {
 	for (unsigned i = 0; i < m_elems.size(); i++) {
 		if (m_matrix->hasEdge(index_s, i)) {
 			outdegree++;
+			if (i == index_s && (this->m_config & UNDIRECTED)) {
+				outdegree++;
+			}
 		}
 	}
 	return outdegree;
 }
+
+
+/**
+ * \brief Tells if a vertex is a source (no edges coming to it = in-degree 0)
+ * \pre The graph must be directed
+ * \param [in] p_v the vertex element we want to know whether it's a source or not
+ * \exception logic_error if the function is called with an undirected graph
+ * \return (boolean) whether the vertex is a source or not
+ */
+template<typename T>
+bool Adjacency_Matrix<T>::vertexIsSource(const T &p_v) const {
+	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come from" any vertex)
+	if (this->m_config & UNDIRECTED) {
+		throw logic_error("vertexIsSource: the graph is undirected");
+	}
+	return (vertexInDegree(p_v) == 0);
+}
+
+/**
+ * \brief Tells if a vertex is a sink (no edges starting from it = out-degree = 0)
+ * \pre The graph must be directed
+ * \param [in] p_v the vertex element we want to know whether it's a sink or not
+ * \exception logic_error if the function is called with an undirected graph
+ * \return (boolean) whether the vertex is a sink or not
+ */
+template<typename T>
+bool Adjacency_Matrix<T>::vertexIsSink(const T &p_v) const {
+	return (vertexOutDegree(p_v) == 0);
+}
+
 
 /**
  *  \brief Lists the adjacent vertices of a vertex in the graph.
@@ -171,8 +208,12 @@ vector<T> Adjacency_Matrix<T>::vertexNeighborhood(const T &p_v, bool p_closed) c
  */
 template<typename T>
 void Adjacency_Matrix<T>::addVertex(const T &p_elem) {
+	if (hasVertex(p_elem)) {
+		throw logic_error("addVertex: this element already is a vertex");
+	}
 	m_elems.push_back(p_elem);
 	m_matrix->addVertex();
+	this->m_nbVertices++;
 }
 
 
@@ -193,8 +234,8 @@ void Adjacency_Matrix<T>::deleteVertex(const T &p_v) {
 		throw logic_error("deleteVertex: the vertex isn't in the graph");
 	}
 	this->m_matrix->deleteVertex(index_s);
-
 	m_elems.erase(m_elems.begin() + index_s);
+	this->m_nbVertices--;
 }
 
 /**
@@ -337,19 +378,13 @@ const string Adjacency_Matrix<T>::_repr() const {
  * \return the index in the adjacency list of the given vertex's node
  */
 template<typename T>
-int Adjacency_Matrix<T>::_index(const T &p_v) const {
-	int index = -1;
-
+unsigned Adjacency_Matrix<T>::_index(const T &p_v) const {
 	for (unsigned pos = 0; pos < m_elems.size(); pos++) {
 		if (m_elems[pos] == p_v) {
-			index = pos;
-			break;
+			return pos;
 		}
 	}
-	if (index == -1) {
-		throw logic_error("Vertex not in the graph");
-	}
-	return index;
+	throw logic_error("Vertex not in the graph");
 }
 
 
@@ -460,7 +495,9 @@ void Adjacency_Matrix<T>::UndirectedMatrix::edges(vector<vector<int> > & p_edges
 
 template <typename T>
 void Adjacency_Matrix<T>::UndirectedMatrix::addVertex() {
-	for (unsigned i = 0; i < m_matrix.size() + 1; i++) {
+	unsigned matrixSize = m_matrix.size();
+
+	for (unsigned i = 0; i < matrixSize+1; i++) {
 		m_matrix.push_back(0);
 	}
 }
@@ -509,9 +546,9 @@ unsigned Adjacency_Matrix<T>::UndirectedMatrix::_calcActualIndex(unsigned p_idx_
 	unsigned index;
 
 	if (p_idx_v1 > p_idx_v2) {
-		index = (p_idx_v1 + 1) * 2 / 2 + p_idx_v2;
+		index = (p_idx_v1 + 1) * p_idx_v1 / 2 + p_idx_v2;
 	} else {
-		index = (p_idx_v2 + 1) * 2 / 2 + p_idx_v1;
+		index = (p_idx_v2 + 1) * p_idx_v2 / 2 + p_idx_v1;
 	}
 	return index;
 }
