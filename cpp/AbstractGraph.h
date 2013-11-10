@@ -77,6 +77,7 @@ protected:
 	virtual const std::string _repr() const = 0;
 
 	int m_config;
+	unsigned m_nbVertices;
 
 };
 

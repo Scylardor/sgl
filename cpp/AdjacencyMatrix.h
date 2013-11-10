@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <string>
+#include <set>
 
 #include "AbstractGraph.h"
 #include "components.h"
@@ -28,7 +29,7 @@ template <typename T>
 class Adjacency_Matrix : public AbstractGraph<T> {
 public:
 	Adjacency_Matrix(configuration p_f = 0);
-	~Adjacency_Matrix();
+	~Adjacency_Matrix() { delete m_matrix; }
 
 	// Getters (const)
 
@@ -54,25 +55,21 @@ public:
 	 * \brief Returns the number of edges in the list
 	 * \return the number of edges in the list
 	 */
-	inline unsigned nbEdges() const { return edges().size(); }
+	inline unsigned nbEdges() const { return m_matrix->nbEdges(); }
 
 	/**
 	 * \brief Alias of the nbVertices method
 	 * "order" is the mathematical term for "number of vertices"
 	 * \return the number of vertices in the list
 	 */
-	inline unsigned int order() const {
-		return nbVertices();
-	}
+	inline unsigned int order() const { return nbVertices(); }
 
 	/**
 	 * \brief Alias of the nbEdges method
 	 * "size" is the mathematical term for "number of edges" (not to be mistaken with order, the number of vertices)
 	 * \return the number of edges in the list
 	 */
-	inline unsigned int size() const {
-		return nbEdges();
-	}
+	inline unsigned int size() const { return nbEdges(); }
 
 	bool hasVertex(const T &) const;
 	unsigned vertexInDegree(const T &) const;
@@ -91,18 +88,70 @@ public:
 	// Others
 	bool operator==(const Adjacency_Matrix &p_rhs) const;
 
-	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_Matrix &p_matrix) {
-		p_stream << p_matrix._repr(); return p_stream;
-	}
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_Matrix &p_matrix) { p_stream << p_matrix._repr(); return p_stream; }
 
 
 private:
+	class IMatrix {
+	public:
+		virtual ~IMatrix() {}
+
+		virtual bool hasEdge(unsigned, unsigned) const = 0;
+		virtual unsigned nbEdges() const = 0;
+		virtual void edges(std::vector<std::vector<int> > &) const = 0;
+
+		virtual void addVertex() = 0;
+		virtual void deleteVertex(unsigned) = 0;
+		virtual void addEdge(unsigned, unsigned) = 0;
+		virtual void deleteEdge(unsigned, unsigned) = 0;
+	};
+
+	class DirectedMatrix : public IMatrix {
+	public:
+		DirectedMatrix() {}
+		~DirectedMatrix() {}
+
+		bool hasEdge(unsigned, unsigned) const;
+		unsigned nbEdges() const;
+		void edges(std::vector<std::vector<int> > &) const;
+
+		void addVertex();
+		void deleteVertex(unsigned);
+		void addEdge(unsigned, unsigned);
+		void deleteEdge(unsigned, unsigned);
+
+	private:
+		std::vector<std::vector<int> > m_matrix;
+	};
+
+	class UndirectedMatrix : public IMatrix {
+	public:
+		UndirectedMatrix() {}
+		~UndirectedMatrix() {}
+
+		bool hasEdge(unsigned, unsigned) const;
+		unsigned nbEdges() const;
+		void edges(std::vector<std::vector<int> > &) const;
+
+		void addVertex();
+		void deleteVertex(unsigned);
+		void addEdge(unsigned, unsigned);
+		void deleteEdge(unsigned, unsigned);
+
+	private:
+		unsigned _calcActualIndex(unsigned, unsigned) const;
+		unsigned _nbVertices() const;
+
+		std::vector<int> m_matrix;
+	};
+
 	std::vector<T> m_elems; /*!< all the vertices */
-	std::vector<std::vector<int> > m_matrix; /*!< the adjacency matrix itself */
+	IMatrix *m_matrix; /*!< the adjacency matrix itself */
 
 	int _index(const T &p_v) const;
 	const std::string _repr() const;
 };
+
 
 } // namespace SGL
 
