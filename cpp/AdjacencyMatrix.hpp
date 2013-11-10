@@ -159,6 +159,10 @@ bool Adjacency_Matrix<T>::vertexIsSource(const T &p_v) const {
  */
 template<typename T>
 bool Adjacency_Matrix<T>::vertexIsSink(const T &p_v) const {
+	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come from" any vertex)
+	if (this->m_config & UNDIRECTED) {
+		throw logic_error("vertexIsSource: the graph is undirected");
+	}
 	return (vertexOutDegree(p_v) == 0);
 }
 
@@ -247,6 +251,7 @@ void Adjacency_Matrix<T>::deleteVertex(const T &p_v) {
  * \post The graph counts one more edge
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if one of the two vertices isn't in the graph
+ * \exception logic_error if the edge already exists
  */
 template<typename T>
 void Adjacency_Matrix<T>::addEdge(const T &p_v1, const T &p_v2) {
@@ -256,6 +261,9 @@ void Adjacency_Matrix<T>::addEdge(const T &p_v1, const T &p_v2) {
 		index_s2 = _index(p_v2);
 	} catch (const logic_error &le) {
 		throw logic_error("addEdge: one of the vertices isn't in the graph");
+	}
+	if (m_matrix->hasEdge(index_s1, index_s2)) {
+		throw logic_error("addEdge: this edge already exists");
 	}
 	m_matrix->addEdge(index_s1, index_s2);
 }
@@ -277,7 +285,7 @@ void Adjacency_Matrix<T>::deleteEdge(const T &p_v1, const T &p_v2) {
 	} catch (const logic_error &le) {
 		throw logic_error("deleteEdge: one of the vertices isn't in the graph");
 	}
-	if (!m_matrix->hasEdge(p_v1, p_v2)) {
+	if (!m_matrix->hasEdge(index_s1, index_s2)) {
 		throw logic_error("deleteEdge: no edge between the two vertices");
 	}
 	m_matrix->deleteEdge(index_s1, index_s2);
@@ -523,7 +531,7 @@ void Adjacency_Matrix<T>::UndirectedMatrix::addEdge(unsigned p_idx_v1, unsigned 
 
 template <typename T>
 void Adjacency_Matrix<T>::UndirectedMatrix::deleteEdge(unsigned p_idx_v1, unsigned p_idx_v2) {
-	m_matrix[_calcActualIndex(p_idx_v1, p_idx_v2)] = 1;
+	m_matrix[_calcActualIndex(p_idx_v1, p_idx_v2)] = 0;
 }
 
 
