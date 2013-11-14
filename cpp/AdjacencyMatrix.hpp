@@ -18,6 +18,13 @@ namespace SGL {
 // External class methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \brief Constructor
+ * \param[in] p_f the bitwise-or'd configuration flags given to the constructor.
+ * One important configuration is UNDIRECTED or not : it changes the type of the internal matrix.
+ * \post The current graph is initialized with the given configuration
+ * \exception bad_alloc in case of insufficient memory
+ */
 template<typename T>
 Adjacency_Matrix<T>::Adjacency_Matrix(configuration p_f) {
 	this->m_config = p_f;
@@ -29,22 +36,49 @@ Adjacency_Matrix<T>::Adjacency_Matrix(configuration p_f) {
 	}
 }
 
+/**
+ * \brief Copy constructor
+ * \param[in] p_src the source graph that will be copied
+ * \post The current graph is initialized with the same data as the source
+ * \exception bad_alloc in case of insufficient memory
+ */
 template<typename T>
 Adjacency_Matrix<T>::Adjacency_Matrix(const Adjacency_Matrix<T> &p_src) :
-		m_elems(p_src.m_elems) {
+		m_matrix(NULL) {
 	this->m_config = p_src.m_config;
-	this->m_nbVertices = p_src.m_nbVertices;
-	//m_elems(p_src.m_elems);
 	if (this->m_config & UNDIRECTED) {
 		m_matrix = new UndirectedMatrix();
 	} else {
 		m_matrix = new DirectedMatrix();
 	}
+	vector<T> vertices = p_src.vertices();
+	// add the vertices
+	for (unsigned i = 0; i < vertices.size(); i++) {
+		addVertex(vertices[i]);
+	}
+	// add the edges
 	vector<pair<T, T> > edges = p_src.edges();
-
 	for (unsigned pos = 0; pos < edges.size(); pos++) {
 		addEdge(edges[pos].first, edges[pos].second);
 	}
+}
+
+/**
+ * \brief Assignment operator overloading
+ * \param[in] p_src the source graph that will be copied
+ * \post The current graph is initialized with the same data as the source
+ * \exception bad_alloc in case of insufficient memory
+ * \return the current class returns itself
+ */
+template<typename T>
+Adjacency_Matrix<T> &Adjacency_Matrix<T>::operator=(const Adjacency_Matrix<T> & p_src) {
+	Adjacency_Matrix<T> copy(p_src);
+
+	this->m_config = p_src.m_config;
+	this->m_nbVertices = p_src.m_nbVertices;
+	std::swap(m_elems, copy.m_elems);
+	std::swap(m_matrix, copy.m_matrix);
+	return (*this);
 }
 
 /**
@@ -170,7 +204,7 @@ bool Adjacency_Matrix<T>::vertexIsSource(const T &p_v) const {
  */
 template<typename T>
 bool Adjacency_Matrix<T>::vertexIsSink(const T &p_v) const {
-	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come from" any vertex)
+	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come to" any vertex)
 	if (this->m_config & UNDIRECTED) {
 		throw logic_error("vertexIsSource: the graph is undirected");
 	}
@@ -335,26 +369,25 @@ vector<pair<T, T> > Adjacency_Matrix<T>::edges() const {
 	for (unsigned src = 0; src < edge_indexes.size(); src++) {
 		vector<pair<T, T> > vertex_edges;
 		for (unsigned dest = 0; dest < edge_indexes[src].size(); dest++) {
-			edges.push_back(make_pair(m_elems[src], m_elems[dest]));
+			edges.push_back(make_pair(m_elems[src], m_elems[edge_indexes[src][dest]]));
 		}
 	}
 	return edges;
 }
 
 /**
- * \brief Checks the strucural equality of two matrices.
+ * \brief Checks the structural equality of two matrices.
+ * \param[in] p_rhs the graph we want to compare the current one to
  * \return true if the matrices are identical, else false
  */
 template<typename T>
 bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
 	bool areEqual = true;
-
-	if (nbEdges() != p_rhs.nbEdges() || nbVertices() != p_rhs.nbVertices()) {
-		areEqual = false;
-	}
-	// splitting in two if's as we have to know if vectors are of same size to perform comparison
-	if (areEqual && (m_elems != p_rhs.m_elems || m_matrix != p_rhs.m_matrix)) {
-		areEqual = false;
+	// first check number of edges/vertices
+	areEqual = (nbEdges() == p_rhs.nbEdges() || nbVertices() == p_rhs.nbVertices());
+	// then check that vertices and edges are the same (don't do it if one of the first checks was already wrong)
+	if (areEqual) {
+		areEqual = (vertices() == p_rhs.vertices() && edges() == p_rhs.edges());
 	}
 	return areEqual;
 }

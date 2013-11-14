@@ -28,9 +28,13 @@ namespace SGL {
 template <typename T>
 class Adjacency_Matrix : public AbstractGraph<T> {
 public:
+	////////////////////////////////////////////////////////////////
+	// Coplien Form
+	////////////////////////////////////////////////////////////////
 	Adjacency_Matrix(configuration p_f = 0);
 	Adjacency_Matrix(const Adjacency_Matrix &);
 	~Adjacency_Matrix() { delete m_matrix; }
+	Adjacency_Matrix &operator=(const Adjacency_Matrix &);
 
 	////////////////////////////////////////////////////////////////
 	// Getters (const)

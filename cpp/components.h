@@ -32,6 +32,9 @@ typedef enum Configuration {
 	ADJACENCY_LIST = 64
 } Configuration;
 
+/** \typedef typedef int configuration
+ *  \brief To make it very clear that the enum values you can bitwise-or are for configuration purposes.
+ */
 typedef int configuration;
 
 }
