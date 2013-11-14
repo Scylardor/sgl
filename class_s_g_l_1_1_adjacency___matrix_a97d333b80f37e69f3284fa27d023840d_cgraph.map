@@ -1,0 +1,6 @@
+<map id="SGL::Adjacency_Matrix::Adjacency_Matrix" name="SGL::Adjacency_Matrix::Adjacency_Matrix">
+<area shape="rect" id="node3" href="$class_s_g_l_1_1_adjacency___matrix.html#adf503958a1ec4ddb52e04cbce497fb69" title="Adds an edge in the graph." alt="" coords="211,5,368,49"/>
+<area shape="rect" id="node5" href="$class_s_g_l_1_1_adjacency___matrix.html#a0cfd0bf8edc463b8e80db3efd8ce3f0d" title="Adds a vertex to the graph." alt="" coords="211,71,368,115"/>
+<area shape="rect" id="node7" href="$class_s_g_l_1_1_adjacency___matrix.html#adba29111c99acbea93e0ad69f1f7f57a" title="Lists all the edges in the graph." alt="" coords="211,138,368,182"/>
+<area shape="rect" id="node9" href="$class_s_g_l_1_1_adjacency___matrix.html#a3db5446b8e36dc08401ecfb12cf4f2d3" title="Lists all the vertices in the graph Returns in a vector all the vertices of the graph." alt="" coords="211,205,368,249"/>
+</map>

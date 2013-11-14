@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_s_g_l_1_1_adjacency___matrix_1_1_i_matrix.html" title="SGL::Adjacency_Matrix\l\&lt; T \&gt;::IMatrix" alt="" coords="5,38,163,82"/>
+<area shape="rect" id="node3" href="$class_s_g_l_1_1_adjacency___matrix_1_1_directed_matrix.html" title="SGL::Adjacency_Matrix\l\&lt; T \&gt;::DirectedMatrix" alt="" coords="211,5,368,49"/>
+<area shape="rect" id="node5" href="$class_s_g_l_1_1_adjacency___matrix_1_1_undirected_matrix.html" title="SGL::Adjacency_Matrix\l\&lt; T \&gt;::UndirectedMatrix" alt="" coords="211,71,368,115"/>
+</map>
