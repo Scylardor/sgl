@@ -1,7 +1,7 @@
 //! \file components.h
 //! \brief The file containing all the SGL namespace-wide components (except classes)
 //! \author baron_a
-//! \version 0.1
+//! \version 0.2
 //! \date Oct 23, 2013
 
 /*

@@ -2,7 +2,7 @@
  * \file AdjacencyMatrix.h
  * \brief Class of the generic template class Adjacency_Matrix inheriting from AbstractGraph
  * \author Alexandre Baron
- * \version 0.1
+ * \version 0.2
  * \date 2013, October
  *
  * An adjacency matrix definition.
@@ -65,6 +65,20 @@ public:
 	 */
 	inline unsigned int size() const { return nbEdges(); }
 
+	/**
+	 * \brief Retrieve the configuration of the graph
+	 * It roughly is an int which you can bitwise-and and bitwise-or to know which configuration stands for this graph
+	 * \return the configuration of the graph
+	 */
+	inline configuration getConfiguration() const { return this->m_config; }
+
+	/**
+	 * \brief Lets the user know whether a graph has a given configuration (e.g. if it's directed, weighted...)
+	 * \param[in] p_config the configuration we want to know the graph has or not
+	 * \return true if the graph holds this configuration
+	 */
+	inline bool hasConfiguration(configuration p_config) const { return (this->m_config & p_config); }
+
 	bool hasVertex(const T &) const;
 	bool vertexIsSource(const T &) const;
 	bool vertexIsSink(const T &) const;
@@ -74,6 +88,7 @@ public:
 	std::vector<T> vertices() const;
 	bool hasEdge(const T &, const T &) const;
 	std::vector<std::pair<T, T> > edges() const;
+
 
 	////////////////////////////////////////////////////////////////
 	// Setters (mutators)

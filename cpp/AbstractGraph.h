@@ -1,15 +1,8 @@
 //! \file AbstractGraph.h
 //! \brief The interface for abstract generic graphs (including adjacency matrix and list)
 //! \author baron_a
-//! \version 0.1
+//! \version 0.2
 //! \date Oct 23, 2013
-
-/*
- * AbstractGraph.h
- *
- *  Created on: Oct 23, 2013
- *      Author: baron_a
- */
 
 #ifndef ABSTRACTGRAPH_H_
 #define ABSTRACTGRAPH_H_
@@ -47,8 +40,6 @@ public:
 	virtual unsigned nbEdges() const = 0;
 	virtual unsigned size() const = 0;
 
-	bool equals(const AbstractGraph &p_other) const;
-
 	// Setters (mutators)
 	virtual void addVertex(const T &) = 0;
 	virtual void deleteVertex(const T &) = 0;
@@ -56,26 +47,7 @@ public:
 	virtual void addEdge(const T&, const T&) = 0;
 	virtual void deleteEdge(const T&, const T&) = 0;
 
-	// Others
-	/**
-	 * \brief Overloads the == operator to check structural equality of two graphs. Calls equals method.
-	 * \param[in] p_g2 the second graph
-	 * \return whether the two lists are structurally equal or not
-	 */
-	inline bool operator==(const AbstractGraph &p_g2) {
-		return equals(p_g2);
-	}
-
-	friend inline std::ostream &operator<<(std::ostream &p_stream,
-			const AbstractGraph &p_graph) {
-		p_stream << p_graph._repr();
-		return p_stream;
-	}
-
 protected:
-
-	virtual const std::string _repr() const = 0;
-
 	int m_config;
 	unsigned m_nbVertices;
 

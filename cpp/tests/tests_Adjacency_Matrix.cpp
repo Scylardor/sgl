@@ -157,9 +157,11 @@ TEST_F(AdjacencyMatrixTest, vertexInDegree) {
 	undirected_matrix.addVertex(21);
 	undirected_matrix.addEdge(21, 42);
 	EXPECT_TRUE(undirected_matrix.vertexInDegree(42) == 1);
+	EXPECT_TRUE(undirected_matrix.vertexInDegree(21) == 1);
 	undirected_matrix.addVertex(84);
 	undirected_matrix.addEdge(84, 42);
 	EXPECT_TRUE(undirected_matrix.vertexInDegree(42) == 2);
+	EXPECT_TRUE(undirected_matrix.vertexInDegree(84) == 1);
 	undirected_matrix.addEdge(42, 42);
 	EXPECT_TRUE(undirected_matrix.vertexInDegree(42) == 4);
 	undirected_matrix.deleteVertex(84);
@@ -193,9 +195,11 @@ TEST_F(AdjacencyMatrixTest, vertexOutDegree) {
 	undirected_matrix.addVertex(21);
 	undirected_matrix.addEdge(42, 21);
 	EXPECT_TRUE(undirected_matrix.vertexOutDegree(42) == 1);
+	EXPECT_TRUE(undirected_matrix.vertexOutDegree(21) == 1);
 	undirected_matrix.addVertex(84);
 	undirected_matrix.addEdge(42, 84);
 	EXPECT_TRUE(undirected_matrix.vertexOutDegree(42) == 2);
+	EXPECT_TRUE(undirected_matrix.vertexOutDegree(84) == 1);
 	undirected_matrix.addEdge(42, 42);
 	EXPECT_TRUE(undirected_matrix.vertexOutDegree(42) == 4);
 	undirected_matrix.deleteVertex(84);
@@ -426,7 +430,7 @@ TEST_F(AdjacencyMatrixTest, deleteEdge) {
 	directed_matrix.addVertex(45);
 	directed_matrix.addVertex(46);
 	directed_matrix.addVertex(47);
-	EXPECT_THROW(undirected_matrix.deleteEdge(42, 43), logic_error); // no such edge
+	EXPECT_THROW(directed_matrix.deleteEdge(42, 43), logic_error); // no such edge
 	EXPECT_THROW(directed_matrix.deleteEdge(42, 41), logic_error); // no such vertex '41'
 	EXPECT_THROW(directed_matrix.deleteEdge(41, 43), logic_error); // idem
 	directed_matrix.addEdge(42, 43);

@@ -2,7 +2,7 @@
  * \file AdjacencyMatrix.hpp
  * \brief Adjacency Matrix implementation.
  * \author Alexandre Baron
- * \version 0.1
+ * \version 0.2
  * \date 2013, October
  *
  * Implementation of a generic adjacency matrix for internal use in a graph
@@ -46,6 +46,7 @@ template<typename T>
 Adjacency_Matrix<T>::Adjacency_Matrix(const Adjacency_Matrix<T> &p_src) :
 		m_matrix(NULL) {
 	this->m_config = p_src.m_config;
+	this->m_nbVertices = 0;
 	if (this->m_config & UNDIRECTED) {
 		m_matrix = new UndirectedMatrix();
 	} else {
@@ -142,7 +143,7 @@ unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
 		if (m_matrix->hasEdge(i, index_s)) {
 			indegree++;
 			// if the graph is undirected: a loop counts twice
-			if (i == index_s && (this->m_config & UNDIRECTED)) {
+			if (i == index_s && hasConfiguration(UNDIRECTED)) {
 				indegree++;
 			}
 		}
@@ -171,7 +172,8 @@ unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_v) const {
 	for (unsigned i = 0; i < m_elems.size(); i++) {
 		if (m_matrix->hasEdge(index_s, i)) {
 			outdegree++;
-			if (i == index_s && (this->m_config & UNDIRECTED)) {
+			// if the graph is undirected: a loop counts twice
+			if (i == index_s && hasConfiguration(UNDIRECTED)) {
 				outdegree++;
 			}
 		}

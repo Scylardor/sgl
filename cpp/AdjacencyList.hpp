@@ -17,449 +17,229 @@ namespace SGL {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_List<T>::Adjacency_List(configuration p_flags)
-{
+Adjacency_List<T>::Adjacency_List(configuration p_flags) {
+	this->m_config = p_flags;
 }
 
-/**
- *  \brief Copy constructor
- *
- *  \pre Enough memory available
- *  \param[in] p_src the graph to copy
- *  \exception bad_alloc in case of insufficient memory
- */
 template<typename T>
-Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src)
-{
-	_copyAdjacencyList(p_src);
-}
+Adjacency_List<T>::Adjacency_List(const Adjacency_List<T> &p_src) {
+	// TODO : refactor this function
+	// copies the nodes and the edges at the same time
+	for (unsigned v = 0; v < p_src.m_nodes.size(); v++) {
+		Node copy(p_src.m_nodes[v]);
 
-/**
- * \brief Constructor of a sub-graph of the original, using a filter vector
- * i.e. only the vertices contained in the vector will be copied
- * \param[in] p_src the graph to copy
- * \param[in] p_filter the vector containing the vertices to copy
- * \pre Enough memory available
- * \pre All the vertices in the filter vector must be in the source graph
- * \post a deep copy of the graph is obtained, with only the vertices contained in the filter vector
- * \exception bad_alloc in case of insufficient memory
- * \exception logic_error if a vertex in filter vector isn't contained in the source graph
- */
-template<typename T>
-Adjacency_List<T>::Adjacency_List(const Adjacency_List &p_src, const std::vector<T> &p_filter) { // the explicit std:: is for Doxygen to recognize the function
-	for (typename vector<T>::const_iterator vertex = p_filter.begin();
-			vertex != p_filter.end(); ++vertex) {
-		if (!p_src.hasVertex((*vertex))) {
-			throw logic_error("Adjacency_List: a filter vector's vertex isn't in the source graph");
-		}
-		addVertex((*vertex));
+		m_nodes.push_back(copy);
 	}
+	this->m_nbVertices = p_src.m_nbVertices;
 }
 
-/**
- *  \brief Destructor
- */
 template<typename T>
-Adjacency_List<T>::~Adjacency_List() {
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		delete m_nodes[pos];
-	}
-}
-
-/**
- * \brief Assignment operator overloading: deep copy of a graph
- * \param[in] p_src the graph to copy
- * \pre Enough memory available
- * \post A deep copy is returned
- * \exception bad_alloc in case of insufficient memory
- * \return the current graph returns itself
- */
-template<typename T>
-const Adjacency_List<T> & Adjacency_List<T>::operator =(const Adjacency_List<T> &p_src) {
-	Adjacency_List<T> temp(p_src);
-
-	std::swap(m_nodes, temp.m_nodes);
-	return *this;
-}
-
-/**
- * \brief Adds a vertex to the graph
- * \param[in] p_v the new element to put in the graph
- * \pre Enough memory available
- * \pre The vertex isn't already in the graph
- * \post The graph counts one more vertex
- * \exception bad_alloc in case of insufficient memory
- * \exception logic_error if the vertex already is in the graph
- */
-template<typename T>
-void Adjacency_List<T>::addVertex(const T &p_v) {
-	if (hasVertex(p_v)) {
-		throw logic_error("addVertex: this vertex is already in the graph");
-	}
-	Node *newv = new Node(p_v);
-
-	m_nodes.push_back(newv);
-}
-
-/**
- * \brief Adds an edge in the graph
- * \param[in] p_v1 the source vertex of the edge
- * \param[in] p_v2 the destination vertex of the edge
- * \pre Enough memory available
- * \pre The 2 vertices of the edge are in the graph
- * \post The graph counts one more edge
- * \exception bad_alloc in case of insufficient memory
- * \exception logic_error if one of the two vertices isn't in the graph
- */
-template<typename T>
-void Adjacency_List<T>::addEdge(const T &p_v1, const T &p_v2) {
-	int index_s1, index_s2;
-	try {
-		index_s1 = _index(p_v1);
-		index_s2 = _index(p_v2);
-	} catch (const logic_error &le) {
-		throw logic_error("addEdge: one of the vertices isn't in the graph");
-	}
-	m_nodes[index_s1]->m_neighbors.push_back(m_nodes[index_s2]->m_data);
-}
-
-/**
- * \brief Deletes an edge in the graph
- * \param[in] p_v1 the source vertex of the edge
- * \param[in] p_v2 the destination vertex of the edge
- * \pre The 2 vertices of the edge are in the graph
- * \post The graph counts one less edge
- * \exception logic_error if one of the two vertices isn't in the graph
- */
-template<typename T>
-void Adjacency_List<T>::deleteEdge(const T &p_v1, const T &p_v2) {
-	int index_s1, index_s2;
-	try {
-		index_s1 = _index(p_v1);
-		index_s2 = _index(p_v2);
-	} catch (const logic_error &le) {
-		throw logic_error("deleteEdge: one of the vertices isn't in the graph");
-	}
-	if (!hasEdge(p_v1, p_v2)) {
-		throw logic_error("deleteEdge: no edge between the two vertices");
-	}
-	m_nodes[index_s1]->m_neighbors.remove(m_nodes[index_s2]->m_data);
-}
-
-/**
- * \brief deletes a vertex from the graph
- * \param[in] p_v The element we want to delete the vertex of
- * \pre The vertex is in the graph
- * \post The graph counts one less vertex
- * \exception logic_error if the vertex isn't in the graph
- */
-template<typename T>
-void Adjacency_List<T>::deleteVertex(const T &p_v) {
-	int index_s;
+bool Adjacency_List<T>::hasVertex(const T & p_elem) const {
+	bool present = true;
 
 	try {
-		index_s = _index(p_v);
-	} catch (const logic_error &le) {
-		throw logic_error("deleteVertex: the vertex isn't in the graph");
+		_index(p_elem);
+	} catch (const logic_error &) {
+		present = false;
 	}
-	for (unsigned int pos = 0; pos != m_nodes.size(); pos++) {
-		m_nodes[pos]->m_neighbors.remove(m_nodes[index_s]->m_data);
-	}
-	delete m_nodes[index_s];
-	m_nodes.erase(m_nodes.begin() + index_s);
+	return present;
 }
 
-/**
- * \brief verifies that a vertex is in the graph
- * \param[in] p_v the element we search the vertex of
- * \post The graph remains unchanged
- * \return whether the graph contains this vertex or not
- */
 template<typename T>
-bool Adjacency_List<T>::hasVertex(const T &p_v) const {
-	bool isHere = true;
-
-	try {
-		_index(p_v);
-	} catch (const logic_error &le) {
-		isHere = false;
+bool Adjacency_List<T>::vertexIsSource(const T &p_elem) const {
+	if (hasConfiguration(UNDIRECTED)) {
+		throw logic_error("vertexIsSource: the graph is undirected");
 	}
-	return isHere;
+	return (vertexInDegree(p_elem) == 0);
 }
 
-/**
- * \brief verifies that an edge is in the graph
- * \param[in] p_v1 the source vertex of the edge
- * \param[in] p_v2 the destination vertex of the edge
- * \pre The 2 vertices of the edge are in the graph
- * \post The graph remains unchanged
- * \exception logic_error if one of the two vertices isn't in the graph
- * \return whether the graph contains this edge or not
- */
 template<typename T>
-bool Adjacency_List<T>::hasEdge(const T &p_v1, const T &p_v2) const {
-	bool isHere = true;
-	int index_s1, index_s2;
-
-	try {
-		index_s1 = _index(p_v1);
-		index_s2 = _index(p_v2);
-	} catch (const logic_error &le) {
-		throw logic_error("hasEdge: one of the vertices isn't in the graph");
+bool Adjacency_List<T>::vertexIsSink(const T &p_elem) const {
+	if (hasConfiguration(UNDIRECTED)) {
+		throw logic_error("vertexIsSink: the graph is undirected");
 	}
-	if (std::find(m_nodes[index_s1]->m_neighbors.begin(),
-			m_nodes[index_s1]->m_neighbors.end(), m_nodes[index_s2]->m_data)
-			== m_nodes[index_s1]->m_neighbors.end()) {
-		isHere = false;
-	}
-	return isHere;
+	return (vertexOutDegree(p_elem) == 0);
 }
 
-/**
- * \brief Lists all the vertices in the graph
- * Returns in a vector all the vertices of the graph
- * \pre Enough memory available
- * \post A vector of all the vertices data is returned
- * \exception bad_alloc in case of insufficient memory
- * \return a vector containing all the vertices of the graph
- */
 template<typename T>
-std::vector<T> Adjacency_List<T>::vertices() const {
-	vector<T> elems;
+unsigned Adjacency_List<T>::vertexInDegree(const T &p_v) const {
+	unsigned inDeg = 0;
+	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 
-	elems.reserve(m_nodes.size());
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		elems.push_back(m_nodes[pos]->m_data);
-	}
-	return elems;
-}
-
-/**
- * \brief Returns the in-degree of a vertex in the graph
- * i.e. the number of neighbor vertices of this vertex which have an edge that
- * goes to it.
- * \param[in] p_v the vertex we want to know the in-degree of
- * \pre The vertex has to be in the graph
- * \exception logic_error if the vertex isn't in the graph
- * \return the number of edges to other vertices the vertex is the destination of
- */
-template<typename T>
-unsigned int Adjacency_List<T>::vertexInDegree(const T &p_v) const {
-	if (!hasVertex(p_v)) {
-		throw logic_error("vertexInDegree: the vertex isn't in the graph");
-	}
-	unsigned int inDegree = 0;
-
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		if (hasEdge(m_nodes[pos]->m_data, p_v)) {
-			inDegree++;
+	for (unsigned v = 0; v < m_nodes.size(); v++) {
+		for (unsigned edge_idx = 0; edge_idx != m_nodes[v].m_edges.size(); edge_idx++) {
+			if (m_nodes[v].m_edges[edge_idx].m_dest == v_idx) {
+				inDeg++;
+				// if the graph is undirected: a loop counts twice
+				if (v == v_idx && hasConfiguration(UNDIRECTED)) {
+					inDeg++;
+				}
+			}
 		}
 	}
-	return inDegree;
+	return inDeg;
 }
 
-/**
- *  \brief Returns the out-degree of a vertex in the graph,
- *  i.e. the number of edges with other vertices it is the source of.
- * \param[in] p_v the vertex we want to know the out-degree of
- * \pre The vertex must be in the graph
- * \exception logic_error if the vertex isn't in the graph
- * \return the number of edges to other vertices the vertex is the source of
- */
 template<typename T>
-unsigned int Adjacency_List<T>::vertexOutDegree(const T &p_v) const {
-	if (!hasVertex(p_v)) {
-		throw logic_error("vertexOutDegree: the vertex isn't in the graph");
+unsigned Adjacency_List<T>::vertexOutDegree(const T &p_v) const {
+	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
+	unsigned outDeg = m_nodes[v_idx].m_edges.size();
+	// if the graph is undirected: a loop counts twice
+	if (hasConfiguration(UNDIRECTED) && hasEdge(p_v, p_v)) {
+		outDeg++;
 	}
-	return m_nodes[_index(p_v)]->m_neighbors.size();
+	return outDeg;
 }
 
-/**
- *  \brief Lists the adjacent vertices of a vertex in the graph.
- *  If closed boolean is set to true, the vertex itself will be included in the returned neighborhood,
- *  making it a closed neighborhood (as opposed to the open version, without it included).
- * \param[in] p_v the vertex we want the neighborhood of
- * \param[in] p_closed boolean to say whether we want the closed neighborhood of the vertex or not (false by default)
- * \pre Enough memory available
- * \pre The vertex has to be in the graph
- * \exception bad_alloc in case of insufficient memory
- * \exception logic_error if the vertex isn't in the graph
- * \return A vector containing the data of all neighbor vertices of the vertex
- */
 template<typename T>
 std::vector<T> Adjacency_List<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
-	if (!hasVertex(p_v)) {
-		throw logic_error("vertexNeighborhood: the vertex isn't in the graph");
-	}
-	vector<T> adjs;
-	unsigned int index_v = _index(p_v);
+	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
+	vector<T> neighbors;
 
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		Node *cur = m_nodes[pos];
+	for (unsigned edge_idx = 0; edge_idx != m_nodes[v_idx].m_edges.size(); edge_idx++) {
+		unsigned nghbr_idx = m_nodes[v_idx].m_edges[edge_idx].m_dest; // get the neighbor index stored in the edge
 
-		if (pos == index_v) {
-			// if we find the node of the given vertex, we add to the vector
-			// all the vertices it points to, after having checked they're not already in it
-			for (typename list<T>::const_iterator vert =
-					cur->m_neighbors.begin(); vert != cur->m_neighbors.end();
-					++vert) {
-				if (std::find(adjs.begin(), adjs.end(), (*vert))
-						== adjs.end()) {
-					adjs.push_back((*vert));
-				}
-			}
-		} else {
-			// for any other vertex, we check if the given vertex is one of the neighbors.
-			// if it is, add this vertex to the vector after having checked it isn't already in it
-			if (std::find(cur->m_neighbors.begin(), cur->m_neighbors.end(),
-					m_nodes[index_v]->m_data) != cur->m_neighbors.end()) {
-				if (std::find(adjs.begin(), adjs.end(), cur->m_data)
-						== adjs.end()) {
-					adjs.push_back(cur->m_data);
-				}
-			}
-		}
+		neighbors.push_back(m_nodes[nghbr_idx].m_data);
 	}
 	if (p_closed) {
-		adjs.push_back(p_v);
+		neighbors.push_back(m_nodes[v_idx].m_data);
 	}
-	return adjs;
+	return neighbors;
 }
 
-/**
- * \brief Displays a representation of the graph
- * \pre The type contained by the graph must have declared an overloading of the << operator for ostreams
- *  	 in order to be printed out by the function
- * \post The graph remains unchanged
- */
 template<typename T>
-const std::string Adjacency_List<T>::_repr() const {
-	stringstream stream;
+std::vector<T> Adjacency_List<T>::vertices() const {
+	vector<T> vertices;
 
-	stream << "Number of vertices: " << nbVertices() << endl;
-	stream << "Number of edges: " << nbEdges() << endl;
-	stream << "List of vertices and their edges:" << endl << endl;
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		Node *cur = m_nodes[pos];
-
-		stream << "Vertex: " << cur->m_data << endl;
-		stream << "Source of " << cur->m_neighbors.size() << " edges to vertices:"
-				<< endl;
-		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
-				v != cur->m_neighbors.end(); ++v) {
-			stream << cur->m_data << " -> " << (*v);
-			stream << endl;
-		}
-		if (cur->m_neighbors.size() == 0) {
-			stream << "No edges" << endl;
-		}
-		stream << endl;
+	for (unsigned idx = 0; idx != m_nodes.size(); idx++) {
+		vertices.push_back(m_nodes[idx].m_data);
 	}
-	if (m_nodes.size() == 0) {
-		stream << "Empty list" << endl;
-	}
-	return stream.str();
+	return vertices;
 }
 
-/**
- * \brief Lists all the edges in the graph.
- * Returns all the edges under the form of a vector of pair of elements (source, destination)
- * \pre Enough memory available
- * \post A vector of all the edges is returned
- * \exception bad_alloc in case of insufficient memory
- * \return A vector of pairs of elements organized as (source, destination)
- */
 template<typename T>
-vector<pair<T, T> > Adjacency_List<T>::edges() const {
+bool Adjacency_List<T>::hasEdge(const T &p_src, const T &p_dest) const {
+	unsigned src_idx = _index(p_src); // throws logic error if the elem's not in the graph
+	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
+	bool present = true;
+
+	try {
+		_edgeIndex(src_idx, dest_idx);
+	} catch (const logic_error &) {
+		present = false;
+	}
+	return present;
+}
+
+template<typename T>
+std::vector<std::pair<T, T> > Adjacency_List<T>::edges() const {
 	vector<pair<T, T> > edges;
-	for (unsigned int i = 0; i < m_nodes.size(); i++) {
-		Node *cur = m_nodes[i];
 
-		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
-				v != cur->m_neighbors.end(); ++v) {
-			edges.push_back(make_pair(cur->m_data, (*v)));
+	for (unsigned idx = 0; idx != m_nodes.size(); idx++) {
+		for (unsigned edge_idx = 0; edge_idx < m_nodes[idx].m_edges.size(); edge_idx++) {
+			unsigned dest_idx = m_nodes[idx].m_edges[edge_idx].m_dest;
+			pair<T, T> newedge = make_pair(m_nodes[idx].m_data, m_nodes[dest_idx].m_data);
+
+			edges.push_back(newedge);
 		}
 	}
 	return edges;
 }
 
-
-/**
- * \brief Checks the structural equality of two graphs: same vertices, same edges
- * \param[in] p_g2 the second graph
- * \return whether the two graphs are structurally equal or not
- */
 template<typename T>
-bool Adjacency_List<T>::equals(const Adjacency_List &p_g2) const {
-	bool areEqual = true;
-
-	if ((nbVertices() != p_g2.nbVertices()) || (nbEdges() != p_g2.nbEdges())) {
-		areEqual = false;
+void Adjacency_List<T>::addVertex(const T &p_elem) {
+	if (hasVertex(p_elem)) {
+		throw logic_error("This element is already in the graph");
 	}
-	if (areEqual) {
-		std::vector<T> elems = vertices();
+	Node newnode(p_elem);
 
-		for (unsigned int i = 0; i < elems.size(); i++) {
-			if (!p_g2.hasVertex(elems[i])) {
-				areEqual = false;
-				break;
-			}
-		}
-		std::vector<std::pair <T, T> > theEdges = edges();
-
-		for (unsigned int i = 0; i < theEdges.size(); i++) {
-			if (!p_g2.hasEdge(theEdges[i].first, theEdges[i].second)) {
-				areEqual = false;
-				break;
-			}
-		}
-	}
-	return areEqual;
+	m_nodes.push_back(newnode);
+	this->m_nbVertices++;
 }
 
-/**
- * \brief Private function used by a copy constructor to copy the adjacency list of another graph
- * \pre Enough memory available
- * \param[in] p_src the source graph
- * \post The contents of the source graph (vertices and edges) are fully copied
- * \exception bad_alloc in case of insufficient memory
- */
 template<typename T>
-void Adjacency_List<T>::_copyAdjacencyList(const Adjacency_List &p_src) {
-	for (unsigned pos = 0; pos < p_src.nbVertices(); pos++) {
-		addVertex(p_src.m_nodes[pos]->m_data);
-	}
-	for (unsigned pos = 0; pos < p_src.nbVertices(); pos++) {
-		Node *cur = p_src.m_nodes[pos];
+void Adjacency_List<T>::deleteVertex(const T &p_v) {
+	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 
-		for (typename list<T>::const_iterator v = cur->m_neighbors.begin();
-				v != cur->m_neighbors.end(); ++v) {
-			addEdge(p_src.m_nodes[pos]->m_data, (*v));
+	m_nodes.erase(m_nodes.begin() + v_idx); // erase the node itself
+	// next, erase the edges coming to this vertex in other nodes
+	// and update the referred node indexes for each remaining vertex
+	for (unsigned i = 0; i < m_nodes.size(); i++) {
+		// search for the vertex index
+		bool present = false;
+		unsigned erase_idx;
+
+		for (unsigned edge_idx = 0; edge_idx < m_nodes[i].m_edges.size(); edge_idx++) {
+			if (m_nodes[i].m_edges[edge_idx].m_dest == v_idx) {
+				present = true;
+				erase_idx = edge_idx;
+			}
+			else if (m_nodes[i].m_edges[edge_idx].m_dest > v_idx) { // update the vertices indexes
+				m_nodes[i].m_edges[edge_idx].m_dest--; // because all the next indexes have been shifted by one
+			}
+			if (present) {
+				m_nodes[i].m_edges.erase(m_nodes[i].m_edges.begin() + erase_idx); // delete the edge going to the deleted vertex
+			}
 		}
+	}
+	this->m_nbVertices--;
+}
+
+template<typename T>
+void Adjacency_List<T>::addEdge(const T &p_src, const T & p_dest) {
+	unsigned src_idx = _index(p_src);   // throws logic error if the elem's not in the graph
+	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
+
+	if (hasEdge(p_src, p_dest)) {
+		throw logic_error("This edge already exists");
+	}
+	Edge newedge(dest_idx);
+
+	m_nodes[src_idx].m_edges.push_back(newedge);
+	// if the graph is undirected : also add an edge in the other way,
+	// except when we do a loop (an edge from a vertex to the same vertex).
+	if (src_idx != dest_idx && hasConfiguration(UNDIRECTED)) {
+		if (hasEdge(p_dest, p_src)) {
+			throw logic_error("This edge already exists"); // since edges add in pairs in an undirected graph, actually shouldn't happen
+		}
+		Edge newedge(src_idx);
+
+		m_nodes[dest_idx].m_edges.push_back(newedge);
 	}
 }
 
-/**
- * \brief Private function used to retrieve the index in the intern adjacency list of an element
- * \pre The vertex is in the graph
- * \param[in] p_v the vertex to search
- * \exception logic_error the vertex isn't in the graph
- * \return the index in the adjacency list of the given vertex's node
- */
 template<typename T>
-int Adjacency_List<T>::_index(const T &p_v) const {
-	int index = -1;
+void Adjacency_List<T>::deleteEdge(const T &p_src, const T & p_dest) {
+	unsigned src_idx = _index(p_src); // throws logic error if the elem's not in the graph
+	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
+	unsigned edge_idx = _edgeIndex(src_idx, dest_idx); // throws logic error if no such edge
 
-	for (unsigned int pos = 0; pos < m_nodes.size(); pos++) {
-		if (m_nodes[pos]->m_data == p_v) {
-			index = pos;
-			break;
+	m_nodes[src_idx].m_edges.erase(m_nodes[src_idx].m_edges.begin() + edge_idx);
+	if (hasConfiguration(UNDIRECTED)) {
+		unsigned edge_idx = _edgeIndex(dest_idx, src_idx); // throws logic error if no such edge
+
+		m_nodes[dest_idx].m_edges.erase(m_nodes[dest_idx].m_edges.begin() + edge_idx);
+	}
+}
+
+template<typename T>
+unsigned Adjacency_List<T>::_index(const T &p_v) const {
+	for (unsigned i = 0; i < m_nodes.size(); i++) {
+		if (m_nodes[i].m_data == p_v) {
+			return i;
 		}
 	}
-	if (index == -1) {
-		throw logic_error("Vertex not in the graph");
+	throw logic_error("This element is not in the graph");
+}
+
+template<typename T>
+unsigned Adjacency_List<T>::_edgeIndex(unsigned p_idx_src, unsigned p_idx_dest) const {
+	for (unsigned edge_idx = 0; edge_idx < m_nodes[p_idx_src].m_edges.size(); edge_idx++) {
+		if (m_nodes[p_idx_src].m_edges[edge_idx].m_dest == p_idx_dest) {
+			return edge_idx;
+		}
 	}
-	return index;
+	throw logic_error("No such edge in the graph");
 }
 
 } // namespace SGL
