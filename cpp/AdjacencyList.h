@@ -16,16 +16,16 @@
 namespace SGL {
 
 template<typename T>
-class Adjacency_List : public AbstractGraph<T> {
+class adjacency_list : public IGraph<T> {
 public:
 
 	////////////////////////////////////////////////////////////////
 	// Coplien Form
 	////////////////////////////////////////////////////////////////
-	Adjacency_List(configuration p_f = 0);
-	Adjacency_List(const Adjacency_List &);
-	~Adjacency_List() {}
-	Adjacency_List &operator=(const Adjacency_List &);
+	adjacency_list(configuration p_f = 0);
+	adjacency_list(const adjacency_list &);
+	~adjacency_list() {}
+	adjacency_list &operator=(const adjacency_list &);
 
 	////////////////////////////////////////////////////////////////
 	// Getters (const)
@@ -34,27 +34,27 @@ public:
 	 * \brief Returns the number of vertices in the matrix
 	 * \return the number of vertices in the matrix
 	 */
-	inline unsigned nbVertices() const { return m_nodes.size(); }
+	inline unsigned nb_vertices() const { return m_nodes.size(); }
 
 	/**
 	 * \brief Returns the number of edges in the list
 	 * \return the number of edges in the list
 	 */
-	unsigned nbEdges() const { return edges().size(); };
+	unsigned nb_edges() const { return edges().size(); };
 
 	/**
 	 * \brief Alias of the nbVertices method
 	 * "order" is the mathematical term for "number of vertices"
 	 * \return the number of vertices in the list
 	 */
-	inline unsigned int order() const { return nbVertices(); }
+	inline unsigned int order() const { return nb_vertices(); }
 
 	/**
 	 * \brief Alias of the nbEdges method
 	 * "size" is the mathematical term for "number of edges" (not to be mistaken with order, the number of vertices)
 	 * \return the number of edges in the list
 	 */
-	inline unsigned int size() const { return nbEdges(); }
+	inline unsigned int size() const { return nb_edges(); }
 
 	/**
 	 * \brief Retrieve the configuration of the graph
@@ -70,31 +70,31 @@ public:
 	 */
 	inline bool hasConfiguration(configuration p_config) const { return (this->m_config & p_config); }
 
-	bool hasVertex(const T &) const;
-	bool vertexIsSource(const T &) const;
-	bool vertexIsSink(const T &) const;
-	unsigned vertexInDegree(const T &) const;
-	unsigned vertexOutDegree(const T &) const;
-	std::vector<T> vertexNeighborhood(const T&, bool p_closed = false) const;
+	bool has_vertex(const T &) const;
+	bool vertex_is_source(const T &) const;
+	bool vertex_is_sink(const T &) const;
+	unsigned vertex_in_degree(const T &) const;
+	unsigned vertex_out_degree(const T &) const;
+	std::vector<T> vertex_neighborhood(const T&, bool p_closed = false) const;
 	std::vector<T> vertices() const;
-	bool hasEdge(const T &, const T &) const;
+	bool has_edge(const T &, const T &) const;
 	std::vector<std::pair<T, T> > edges() const;
 
 
 	////////////////////////////////////////////////////////////////
 	// Setters (mutators)
 	////////////////////////////////////////////////////////////////
-	void addVertex(const T &);
-	void deleteVertex(const T &);
-	void addEdge(const T&, const T&);
-	void deleteEdge(const T&, const T&);
+	void add_vertex(const T &);
+	void delete_vertex(const T &);
+	void add_edge(const T&, const T&);
+	void delete_edge(const T&, const T&);
 
 	////////////////////////////////////////////////////////////////
 	// Others
 	////////////////////////////////////////////////////////////////
-	bool operator==(const Adjacency_List &p_rhs) const;
+	bool operator==(const adjacency_list &p_rhs) const;
 
-//	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_List &p_list) { p_stream << p_list._repr(); return p_stream; }
+//	friend inline std::ostream &operator<<(std::ostream &p_stream, const adjacency_list &p_list) { p_stream << p_list._repr(); return p_stream; }
 
 private:
 	/**
@@ -124,7 +124,7 @@ private:
 	};
 	std::vector<Node> m_nodes; /*!< internal container for the adjacency list nodes */
 
-	void	_copyAdjacencyList(const Adjacency_List &p_src);
+	void	_copyAdjacencyList(const adjacency_list &p_src);
 	unsigned _index(const T &p_v) const;
 	unsigned _edgeIndex(unsigned, unsigned) const;
 	const std::string _repr() const;

@@ -1,6 +1,6 @@
 /**
  * \file AdjacencyMatrix.h
- * \brief Class of the generic template class Adjacency_Matrix inheriting from AbstractGraph
+ * \brief Class of the generic template class adjacency_matrix inheriting from AbstractGraph
  * \author Alexandre Baron
  * \version 0.2
  * \date 2013, October
@@ -13,28 +13,27 @@
 
 #include <vector>
 #include <string>
-#include <set>
 
 #include "AbstractGraph.h"
 #include "components.h"
 
 namespace SGL {
 /**
- * \class Adjacency_Matrix
+ * \class adjacency_matrix
  *
  * \brief Class representing an adjacency matrix
  * for internal use by a graph
  */
-template <typename T>
-class Adjacency_Matrix : public AbstractGraph<T> {
+template <typename T, int graph_traits>
+class adjacency_matrix : public IGraph<T> {
 public:
 	////////////////////////////////////////////////////////////////
 	// Coplien Form
 	////////////////////////////////////////////////////////////////
-	Adjacency_Matrix(configuration p_f = 0);
-	Adjacency_Matrix(const Adjacency_Matrix &);
-	~Adjacency_Matrix() { delete m_matrix; }
-	Adjacency_Matrix &operator=(const Adjacency_Matrix &);
+	adjacency_matrix(configuration p_f = 0);
+	adjacency_matrix(const adjacency_matrix &);
+	~adjacency_matrix() { delete m_matrix; }
+	adjacency_matrix &operator=(const adjacency_matrix &);
 
 	////////////////////////////////////////////////////////////////
 	// Getters (const)
@@ -43,27 +42,27 @@ public:
 	 * \brief Returns the number of vertices in the matrix
 	 * \return the number of vertices in the matrix
 	 */
-	inline unsigned nbVertices() const { return this->m_nbVertices; }
+	inline unsigned nb_vertices() const { return this->m_nbVertices; }
 
 	/**
 	 * \brief Returns the number of edges in the list
 	 * \return the number of edges in the list
 	 */
-	inline unsigned nbEdges() const { return m_matrix->nbEdges(); }
+	inline unsigned nb_edges() const { return m_matrix->nbEdges(); }
 
 	/**
 	 * \brief Alias of the nbVertices method
 	 * "order" is the mathematical term for "number of vertices"
 	 * \return the number of vertices in the list
 	 */
-	inline unsigned int order() const { return nbVertices(); }
+	inline unsigned int order() const { return nb_vertices(); }
 
 	/**
 	 * \brief Alias of the nbEdges method
 	 * "size" is the mathematical term for "number of edges" (not to be mistaken with order, the number of vertices)
 	 * \return the number of edges in the list
 	 */
-	inline unsigned int size() const { return nbEdges(); }
+	inline unsigned int size() const { return nb_edges(); }
 
 	/**
 	 * \brief Retrieve the configuration of the graph
@@ -79,31 +78,31 @@ public:
 	 */
 	inline bool hasConfiguration(configuration p_config) const { return (this->m_config & p_config); }
 
-	bool hasVertex(const T &) const;
-	bool vertexIsSource(const T &) const;
-	bool vertexIsSink(const T &) const;
-	unsigned vertexInDegree(const T &) const;
-	unsigned vertexOutDegree(const T &) const;
-	std::vector<T> vertexNeighborhood(const T&, bool p_closed = false) const;
+	bool has_vertex(const T &) const;
+	bool vertex_is_source(const T &) const;
+	bool vertex_is_sink(const T &) const;
+	unsigned vertex_in_degree(const T &) const;
+	unsigned vertex_out_degree(const T &) const;
+	std::vector<T> vertex_neighborhood(const T&, bool p_closed = false) const;
 	std::vector<T> vertices() const;
-	bool hasEdge(const T &, const T &) const;
+	bool has_edge(const T &, const T &) const;
 	std::vector<std::pair<T, T> > edges() const;
 
 
 	////////////////////////////////////////////////////////////////
 	// Setters (mutators)
 	////////////////////////////////////////////////////////////////
-	void addVertex(const T &);
-	void deleteVertex(const T &);
-	void addEdge(const T&, const T&);
-	void deleteEdge(const T&, const T&);
+	void add_vertex(const T &);
+	void delete_vertex(const T &);
+	void add_edge(const T&, const T&);
+	void delete_edge(const T&, const T&);
 
 	////////////////////////////////////////////////////////////////
 	// Others
 	////////////////////////////////////////////////////////////////
-	bool operator==(const Adjacency_Matrix &p_rhs) const;
+	bool operator==(const adjacency_matrix &p_rhs) const;
 
-	friend inline std::ostream &operator<<(std::ostream &p_stream, const Adjacency_Matrix &p_matrix) { p_stream << p_matrix._repr(); return p_stream; }
+	friend inline std::ostream &operator<<(std::ostream &p_stream, const adjacency_matrix &p_matrix) { p_stream << p_matrix._repr(); return p_stream; }
 
 
 private:

@@ -17,24 +17,25 @@ namespace SGL {
  *  \exception bad_alloc in case of insufficient memory
  */
 template<typename T>
-Adjacency_List<T>::Adjacency_List(configuration p_flags) {
+adjacency_list<T>::adjacency_list(configuration p_flags) {
 	this->m_config = p_flags;
 }
 
 template<typename T>
-Adjacency_List<T>::Adjacency_List(const Adjacency_List<T> &p_src) {
-	// TODO : refactor this function
+adjacency_list<T>::adjacency_list(const adjacency_list<T> &p_src) {
+	vector<Node> tmp;
 	// copies the nodes and the edges at the same time
 	for (unsigned v = 0; v < p_src.m_nodes.size(); v++) {
 		Node copy(p_src.m_nodes[v]);
 
-		m_nodes.push_back(copy);
+		tmp.push_back(copy);
 	}
+	m_nodes = tmp;
 	this->m_nbVertices = p_src.m_nbVertices;
 }
 
 template<typename T>
-bool Adjacency_List<T>::hasVertex(const T & p_elem) const {
+bool adjacency_list<T>::has_vertex(const T & p_elem) const {
 	bool present = true;
 
 	try {
@@ -46,23 +47,23 @@ bool Adjacency_List<T>::hasVertex(const T & p_elem) const {
 }
 
 template<typename T>
-bool Adjacency_List<T>::vertexIsSource(const T &p_elem) const {
+bool adjacency_list<T>::vertex_is_source(const T &p_elem) const {
 	if (hasConfiguration(UNDIRECTED)) {
 		throw logic_error("vertexIsSource: the graph is undirected");
 	}
-	return (vertexInDegree(p_elem) == 0);
+	return (vertex_in_degree(p_elem) == 0);
 }
 
 template<typename T>
-bool Adjacency_List<T>::vertexIsSink(const T &p_elem) const {
+bool adjacency_list<T>::vertex_is_sink(const T &p_elem) const {
 	if (hasConfiguration(UNDIRECTED)) {
 		throw logic_error("vertexIsSink: the graph is undirected");
 	}
-	return (vertexOutDegree(p_elem) == 0);
+	return (vertex_out_degree(p_elem) == 0);
 }
 
 template<typename T>
-unsigned Adjacency_List<T>::vertexInDegree(const T &p_v) const {
+unsigned adjacency_list<T>::vertex_in_degree(const T &p_v) const {
 	unsigned inDeg = 0;
 	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 
@@ -81,18 +82,18 @@ unsigned Adjacency_List<T>::vertexInDegree(const T &p_v) const {
 }
 
 template<typename T>
-unsigned Adjacency_List<T>::vertexOutDegree(const T &p_v) const {
+unsigned adjacency_list<T>::vertex_out_degree(const T &p_v) const {
 	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 	unsigned outDeg = m_nodes[v_idx].m_edges.size();
 	// if the graph is undirected: a loop counts twice
-	if (hasConfiguration(UNDIRECTED) && hasEdge(p_v, p_v)) {
+	if (hasConfiguration(UNDIRECTED) && has_edge(p_v, p_v)) {
 		outDeg++;
 	}
 	return outDeg;
 }
 
 template<typename T>
-std::vector<T> Adjacency_List<T>::vertexNeighborhood(const T &p_v, bool p_closed) const {
+std::vector<T> adjacency_list<T>::vertex_neighborhood(const T &p_v, bool p_closed) const {
 	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 	vector<T> neighbors;
 
@@ -108,7 +109,7 @@ std::vector<T> Adjacency_List<T>::vertexNeighborhood(const T &p_v, bool p_closed
 }
 
 template<typename T>
-std::vector<T> Adjacency_List<T>::vertices() const {
+std::vector<T> adjacency_list<T>::vertices() const {
 	vector<T> vertices;
 
 	for (unsigned idx = 0; idx != m_nodes.size(); idx++) {
@@ -118,7 +119,7 @@ std::vector<T> Adjacency_List<T>::vertices() const {
 }
 
 template<typename T>
-bool Adjacency_List<T>::hasEdge(const T &p_src, const T &p_dest) const {
+bool adjacency_list<T>::has_edge(const T &p_src, const T &p_dest) const {
 	unsigned src_idx = _index(p_src); // throws logic error if the elem's not in the graph
 	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
 	bool present = true;
@@ -132,7 +133,7 @@ bool Adjacency_List<T>::hasEdge(const T &p_src, const T &p_dest) const {
 }
 
 template<typename T>
-std::vector<std::pair<T, T> > Adjacency_List<T>::edges() const {
+std::vector<std::pair<T, T> > adjacency_list<T>::edges() const {
 	vector<pair<T, T> > edges;
 
 	for (unsigned idx = 0; idx != m_nodes.size(); idx++) {
@@ -147,8 +148,8 @@ std::vector<std::pair<T, T> > Adjacency_List<T>::edges() const {
 }
 
 template<typename T>
-void Adjacency_List<T>::addVertex(const T &p_elem) {
-	if (hasVertex(p_elem)) {
+void adjacency_list<T>::add_vertex(const T &p_elem) {
+	if (has_vertex(p_elem)) {
 		throw logic_error("This element is already in the graph");
 	}
 	Node newnode(p_elem);
@@ -158,7 +159,7 @@ void Adjacency_List<T>::addVertex(const T &p_elem) {
 }
 
 template<typename T>
-void Adjacency_List<T>::deleteVertex(const T &p_v) {
+void adjacency_list<T>::delete_vertex(const T &p_v) {
 	unsigned v_idx = _index(p_v); // throws logic error if the elem's not in the graph
 
 	m_nodes.erase(m_nodes.begin() + v_idx); // erase the node itself
@@ -186,11 +187,11 @@ void Adjacency_List<T>::deleteVertex(const T &p_v) {
 }
 
 template<typename T>
-void Adjacency_List<T>::addEdge(const T &p_src, const T & p_dest) {
+void adjacency_list<T>::add_edge(const T &p_src, const T & p_dest) {
 	unsigned src_idx = _index(p_src);   // throws logic error if the elem's not in the graph
 	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
 
-	if (hasEdge(p_src, p_dest)) {
+	if (has_edge(p_src, p_dest)) {
 		throw logic_error("This edge already exists");
 	}
 	Edge newedge(dest_idx);
@@ -199,7 +200,7 @@ void Adjacency_List<T>::addEdge(const T &p_src, const T & p_dest) {
 	// if the graph is undirected : also add an edge in the other way,
 	// except when we do a loop (an edge from a vertex to the same vertex).
 	if (src_idx != dest_idx && hasConfiguration(UNDIRECTED)) {
-		if (hasEdge(p_dest, p_src)) {
+		if (has_edge(p_dest, p_src)) {
 			throw logic_error("This edge already exists"); // since edges add in pairs in an undirected graph, actually shouldn't happen
 		}
 		Edge newedge(src_idx);
@@ -209,7 +210,7 @@ void Adjacency_List<T>::addEdge(const T &p_src, const T & p_dest) {
 }
 
 template<typename T>
-void Adjacency_List<T>::deleteEdge(const T &p_src, const T & p_dest) {
+void adjacency_list<T>::delete_edge(const T &p_src, const T & p_dest) {
 	unsigned src_idx = _index(p_src); // throws logic error if the elem's not in the graph
 	unsigned dest_idx = _index(p_dest); // throws logic error if the elem's not in the graph
 	unsigned edge_idx = _edgeIndex(src_idx, dest_idx); // throws logic error if no such edge
@@ -223,7 +224,7 @@ void Adjacency_List<T>::deleteEdge(const T &p_src, const T & p_dest) {
 }
 
 template<typename T>
-unsigned Adjacency_List<T>::_index(const T &p_v) const {
+unsigned adjacency_list<T>::_index(const T &p_v) const {
 	for (unsigned i = 0; i < m_nodes.size(); i++) {
 		if (m_nodes[i].m_data == p_v) {
 			return i;
@@ -233,7 +234,7 @@ unsigned Adjacency_List<T>::_index(const T &p_v) const {
 }
 
 template<typename T>
-unsigned Adjacency_List<T>::_edgeIndex(unsigned p_idx_src, unsigned p_idx_dest) const {
+unsigned adjacency_list<T>::_edgeIndex(unsigned p_idx_src, unsigned p_idx_dest) const {
 	for (unsigned edge_idx = 0; edge_idx < m_nodes[p_idx_src].m_edges.size(); edge_idx++) {
 		if (m_nodes[p_idx_src].m_edges[edge_idx].m_dest == p_idx_dest) {
 			return edge_idx;

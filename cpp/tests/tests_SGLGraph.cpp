@@ -1,11 +1,12 @@
 /*
- *  tests_theGraph.cpp
+ *  tests_SGLGraph.cpp
  *
- *  Created on: Oct 11, 2013
+ *  Created on: Oct 31, 2013
  *
  *  Author: Alexandre Baron
  */
 
+#include <algorithm>
 #include "gtest/gtest.h"
 #include "SGL.h"
 

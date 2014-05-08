@@ -25,8 +25,8 @@ namespace SGL {
  * \post The current graph is initialized with the given configuration
  * \exception bad_alloc in case of insufficient memory
  */
-template<typename T>
-Adjacency_Matrix<T>::Adjacency_Matrix(configuration p_f) {
+template<typename T, int traits>
+adjacency_matrix<T, traits>::adjacency_matrix(configuration p_f) {
 	this->m_config = p_f;
 	this->m_nbVertices = 0;
 	if (p_f & UNDIRECTED) {
@@ -42,8 +42,8 @@ Adjacency_Matrix<T>::Adjacency_Matrix(configuration p_f) {
  * \post The current graph is initialized with the same data as the source
  * \exception bad_alloc in case of insufficient memory
  */
-template<typename T>
-Adjacency_Matrix<T>::Adjacency_Matrix(const Adjacency_Matrix<T> &p_src) :
+template<typename T, int traits>
+adjacency_matrix<T, traits>::adjacency_matrix(const adjacency_matrix<T, traits> &p_src) :
 		m_matrix(NULL) {
 	this->m_config = p_src.m_config;
 	this->m_nbVertices = 0;
@@ -55,12 +55,12 @@ Adjacency_Matrix<T>::Adjacency_Matrix(const Adjacency_Matrix<T> &p_src) :
 	vector<T> vertices = p_src.vertices();
 	// add the vertices
 	for (unsigned i = 0; i < vertices.size(); i++) {
-		addVertex(vertices[i]);
+		add_vertex(vertices[i]);
 	}
 	// add the edges
 	vector<pair<T, T> > edges = p_src.edges();
 	for (unsigned pos = 0; pos < edges.size(); pos++) {
-		addEdge(edges[pos].first, edges[pos].second);
+		add_edge(edges[pos].first, edges[pos].second);
 	}
 }
 
@@ -71,9 +71,9 @@ Adjacency_Matrix<T>::Adjacency_Matrix(const Adjacency_Matrix<T> &p_src) :
  * \exception bad_alloc in case of insufficient memory
  * \return the current class returns itself
  */
-template<typename T>
-Adjacency_Matrix<T> &Adjacency_Matrix<T>::operator=(const Adjacency_Matrix<T> & p_src) {
-	Adjacency_Matrix<T> copy(p_src);
+template<typename T, int traits>
+adjacency_matrix<T, traits> &adjacency_matrix<T, traits>::operator=(const adjacency_matrix<T, traits> & p_src) {
+	adjacency_matrix<T, traits> copy(p_src);
 
 	this->m_config = p_src.m_config;
 	this->m_nbVertices = p_src.m_nbVertices;
@@ -87,8 +87,8 @@ Adjacency_Matrix<T> &Adjacency_Matrix<T>::operator=(const Adjacency_Matrix<T> & 
  * \param[in] p_v the element we search the vertex of
  * \return whether the matrix contains this vertex or not
  */
-template<typename T>
-bool Adjacency_Matrix<T>::hasVertex(const T &p_v) const {
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::has_vertex(const T &p_v) const {
 	bool isHere = true;
 
 	try {
@@ -107,8 +107,8 @@ bool Adjacency_Matrix<T>::hasVertex(const T &p_v) const {
  * \exception logic_error if one of the two vertices isn't in the matrix
  * \return whether the matrix contains this edge or not
  */
-template<typename T>
-bool Adjacency_Matrix<T>::hasEdge(const T &p_v1, const T &p_v2) const {
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::has_edge(const T &p_v1, const T &p_v2) const {
 	int index_s1, index_s2;
 
 	try {
@@ -129,8 +129,8 @@ bool Adjacency_Matrix<T>::hasEdge(const T &p_v1, const T &p_v2) const {
  * \exception logic_error if the vertex isn't in the matrix
  * \return the number of edges to other vertices the vertex is the destination of
  */
-template<typename T>
-unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::vertex_in_degree(const T & p_v) const {
 	unsigned index_s;
 	unsigned indegree = 0;
 
@@ -159,8 +159,8 @@ unsigned Adjacency_Matrix<T>::vertexInDegree(const T & p_v) const {
  * \exception logic_error if the vertex isn't in the graph
  * \return the number of edges to other vertices the vertex is the source of
  */
-template<typename T>
-unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_v) const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::vertex_out_degree(const T & p_v) const {
 	unsigned index_s;
 	unsigned outdegree = 0;
 
@@ -188,13 +188,13 @@ unsigned Adjacency_Matrix<T>::vertexOutDegree(const T & p_v) const {
  * \exception logic_error if the function is called with an undirected graph
  * \return (boolean) whether the vertex is a source or not
  */
-template<typename T>
-bool Adjacency_Matrix<T>::vertexIsSource(const T &p_v) const {
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::vertex_is_source(const T &p_v) const {
 	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come from" any vertex)
 	if (this->m_config & UNDIRECTED) {
 		throw logic_error("vertexIsSource: the graph is undirected");
 	}
-	return (vertexInDegree(p_v) == 0);
+	return (vertex_in_degree(p_v) == 0);
 }
 
 /**
@@ -204,13 +204,13 @@ bool Adjacency_Matrix<T>::vertexIsSource(const T &p_v) const {
  * \exception logic_error if the function is called with an undirected graph
  * \return (boolean) whether the vertex is a sink or not
  */
-template<typename T>
-bool Adjacency_Matrix<T>::vertexIsSink(const T &p_v) const {
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::vertex_is_sink(const T &p_v) const {
 	// no such thing as a source in an undirected graph (as the edges are undirected, they don't "come to" any vertex)
 	if (this->m_config & UNDIRECTED) {
 		throw logic_error("vertexIsSource: the graph is undirected");
 	}
-	return (vertexOutDegree(p_v) == 0);
+	return (vertex_out_degree(p_v) == 0);
 }
 
 /**
@@ -225,8 +225,8 @@ bool Adjacency_Matrix<T>::vertexIsSink(const T &p_v) const {
  * \exception logic_error if the vertex isn't in the graph
  * \return A vector containing the data of all neighbor vertices of the vertex
  */
-template<typename T>
-vector<T> Adjacency_Matrix<T>::vertexNeighborhood(const T &p_v,
+template<typename T, int traits>
+vector<T> adjacency_matrix<T, traits>::vertex_neighborhood(const T &p_v,
 		bool p_closed) const {
 	unsigned index;
 
@@ -259,9 +259,9 @@ vector<T> Adjacency_Matrix<T>::vertexNeighborhood(const T &p_v,
  * \exception bad_alloc in case of insufficient memory
  * \exception logic_error if the vertex already is in the graph
  */
-template<typename T>
-void Adjacency_Matrix<T>::addVertex(const T &p_elem) {
-	if (hasVertex(p_elem)) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::add_vertex(const T &p_elem) {
+	if (has_vertex(p_elem)) {
 		throw logic_error("addVertex: this element already is a vertex");
 	}
 	m_elems.push_back(p_elem);
@@ -276,8 +276,8 @@ void Adjacency_Matrix<T>::addVertex(const T &p_elem) {
  * \post The graph counts one less vertex
  * \exception logic_error if the vertex isn't in the graph
  */
-template<typename T>
-void Adjacency_Matrix<T>::deleteVertex(const T &p_v) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::delete_vertex(const T &p_v) {
 	int index_s;
 
 	try {
@@ -301,8 +301,8 @@ void Adjacency_Matrix<T>::deleteVertex(const T &p_v) {
  * \exception logic_error if one of the two vertices isn't in the graph
  * \exception logic_error if the edge already exists
  */
-template<typename T>
-void Adjacency_Matrix<T>::addEdge(const T &p_v1, const T &p_v2) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::add_edge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -324,8 +324,8 @@ void Adjacency_Matrix<T>::addEdge(const T &p_v1, const T &p_v2) {
  * \post The graph counts one less edge
  * \exception logic_error if one of the two vertices isn't in the graph
  */
-template<typename T>
-void Adjacency_Matrix<T>::deleteEdge(const T &p_v1, const T &p_v2) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::delete_edge(const T &p_v1, const T &p_v2) {
 	int index_s1, index_s2;
 	try {
 		index_s1 = _index(p_v1);
@@ -347,8 +347,8 @@ void Adjacency_Matrix<T>::deleteEdge(const T &p_v1, const T &p_v2) {
  * \exception bad_alloc in case of insufficient memory
  * \return a vector containing all the vertices of the graph
  */
-template<typename T>
-vector<T> Adjacency_Matrix<T>::vertices() const {
+template<typename T, int traits>
+vector<T> adjacency_matrix<T, traits>::vertices() const {
 	vector<T> verts(m_elems);
 
 	return verts;
@@ -362,8 +362,8 @@ vector<T> Adjacency_Matrix<T>::vertices() const {
  * \exception bad_alloc in case of insufficient memory
  * \return A vector of pairs of elements organized as (source, destination)
  */
-template<typename T>
-vector<pair<T, T> > Adjacency_Matrix<T>::edges() const {
+template<typename T, int traits>
+vector<pair<T, T> > adjacency_matrix<T, traits>::edges() const {
 	vector<pair<T, T> > edges;
 	vector<vector<int> > edge_indexes;
 
@@ -382,11 +382,11 @@ vector<pair<T, T> > Adjacency_Matrix<T>::edges() const {
  * \param[in] p_rhs the graph we want to compare the current one to
  * \return true if the matrices are identical, else false
  */
-template<typename T>
-bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::operator==(const adjacency_matrix &p_rhs) const {
 	bool areEqual = true;
 	// first check number of edges/vertices
-	areEqual = (nbEdges() == p_rhs.nbEdges() || nbVertices() == p_rhs.nbVertices());
+	areEqual = (nb_edges() == p_rhs.nb_edges() || nb_vertices() == p_rhs.nb_vertices());
 	// then check that vertices and edges are the same (don't do it if one of the first checks was already wrong)
 	if (areEqual) {
 		areEqual = (vertices() == p_rhs.vertices() && edges() == p_rhs.edges());
@@ -397,8 +397,8 @@ bool Adjacency_Matrix<T>::operator==(const Adjacency_Matrix &p_rhs) const {
 /**
  * \brief Output function.
  */
-template<typename T>
-const string Adjacency_Matrix<T>::_repr() const {
+template<typename T, int traits>
+const string adjacency_matrix<T, traits>::_repr() const {
 	stringstream stream;
 //
 //	stream << "Matrix vertices number: " << nbVertices() << endl;
@@ -430,8 +430,8 @@ const string Adjacency_Matrix<T>::_repr() const {
  * \exception logic_error the vertex isn't in the graph
  * \return the index in the adjacency list of the given vertex's node
  */
-template<typename T>
-unsigned Adjacency_Matrix<T>::_index(const T &p_v) const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::_index(const T &p_v) const {
 	for (unsigned pos = 0; pos < m_elems.size(); pos++) {
 		if (m_elems[pos] == p_v) {
 			return pos;
@@ -444,8 +444,8 @@ unsigned Adjacency_Matrix<T>::_index(const T &p_v) const {
 // Internal matrices methods: Directed matrix
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-unsigned Adjacency_Matrix<T>::DirectedMatrix::nbEdges() const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::DirectedMatrix::nbEdges() const {
 	unsigned nbEdges = 0;
 
 	for (unsigned pos = 0; pos != m_matrix.size(); pos++) {
@@ -458,14 +458,14 @@ unsigned Adjacency_Matrix<T>::DirectedMatrix::nbEdges() const {
 	return nbEdges;
 }
 
-template<typename T>
-bool Adjacency_Matrix<T>::DirectedMatrix::hasEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::DirectedMatrix::hasEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) const {
 	return (m_matrix[p_idx_v1][p_idx_v2] != 0);
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::DirectedMatrix::addVertex() {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::DirectedMatrix::addVertex() {
 	vector<int> newline(m_matrix.size(), 0);
 
 	m_matrix.push_back(newline);
@@ -474,28 +474,28 @@ void Adjacency_Matrix<T>::DirectedMatrix::addVertex() {
 	}
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::DirectedMatrix::deleteVertex(unsigned p_index) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::DirectedMatrix::deleteVertex(unsigned p_index) {
 	for (unsigned pos = 0; pos != m_matrix.size(); pos++) {
 		m_matrix[pos].erase(m_matrix[pos].begin() + p_index);
 	}
 	m_matrix.erase(m_matrix.begin() + p_index);
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::DirectedMatrix::addEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::DirectedMatrix::addEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) {
 	m_matrix[p_idx_v1][p_idx_v2] = 1;
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::DirectedMatrix::deleteEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::DirectedMatrix::deleteEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) {
 	m_matrix[p_idx_v1][p_idx_v2] = 0;
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::DirectedMatrix::edges(
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::DirectedMatrix::edges(
 		vector<vector<int> > & p_edges_indexes) const {
 	for (unsigned i = 0; i < m_matrix.size(); i++) {
 		vector<int> vertex_edges_dests;
@@ -513,8 +513,8 @@ void Adjacency_Matrix<T>::DirectedMatrix::edges(
 // Internal matrices methods: Undirected matrix
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-unsigned Adjacency_Matrix<T>::UndirectedMatrix::nbEdges() const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::UndirectedMatrix::nbEdges() const {
 	unsigned nbEdges = 0;
 
 	for (unsigned i = 0; i != m_matrix.size(); i++) {
@@ -525,14 +525,14 @@ unsigned Adjacency_Matrix<T>::UndirectedMatrix::nbEdges() const {
 	return nbEdges;
 }
 
-template<typename T>
-bool Adjacency_Matrix<T>::UndirectedMatrix::hasEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+bool adjacency_matrix<T, traits>::UndirectedMatrix::hasEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) const {
 	return (m_matrix[_calcActualIndex(p_idx_v1, p_idx_v2)] != 0);
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::UndirectedMatrix::edges(
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::UndirectedMatrix::edges(
 		vector<vector<int> > & p_edges_indexes) const {
 	vector<int> vertex_edges_dests;
 
@@ -549,8 +549,8 @@ void Adjacency_Matrix<T>::UndirectedMatrix::edges(
 	}
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::UndirectedMatrix::addVertex() {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::UndirectedMatrix::addVertex() {
 	unsigned matrixSize = m_matrix.size();
 
 	for (unsigned i = 0; i < matrixSize + 1; i++) {
@@ -558,8 +558,8 @@ void Adjacency_Matrix<T>::UndirectedMatrix::addVertex() {
 	}
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::UndirectedMatrix::deleteVertex(unsigned p_index) {
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::UndirectedMatrix::deleteVertex(unsigned p_index) {
 	// first, remove the edges of the vertices following this one
 	for (unsigned pos = _nbVertices() - 1; pos != p_index; pos--) {
 		int edgeIndex = (pos + 1) * pos / 2 + p_index;
@@ -573,20 +573,20 @@ void Adjacency_Matrix<T>::UndirectedMatrix::deleteVertex(unsigned p_index) {
 			m_matrix.begin() + startIndex + (p_index + 1));
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::UndirectedMatrix::addEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::UndirectedMatrix::addEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) {
 	m_matrix[_calcActualIndex(p_idx_v1, p_idx_v2)] = 1;
 }
 
-template<typename T>
-void Adjacency_Matrix<T>::UndirectedMatrix::deleteEdge(unsigned p_idx_v1,
+template<typename T, int traits>
+void adjacency_matrix<T, traits>::UndirectedMatrix::deleteEdge(unsigned p_idx_v1,
 		unsigned p_idx_v2) {
 	m_matrix[_calcActualIndex(p_idx_v1, p_idx_v2)] = 0;
 }
 
-template<typename T>
-unsigned Adjacency_Matrix<T>::UndirectedMatrix::_nbVertices() const {
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::UndirectedMatrix::_nbVertices() const {
 	unsigned nbVertices = 0;
 	unsigned step = 2;
 	unsigned cpt = 1;
@@ -599,8 +599,8 @@ unsigned Adjacency_Matrix<T>::UndirectedMatrix::_nbVertices() const {
 	return nbVertices;
 }
 
-template<typename T>
-unsigned Adjacency_Matrix<T>::UndirectedMatrix::_calcActualIndex(
+template<typename T, int traits>
+unsigned adjacency_matrix<T, traits>::UndirectedMatrix::_calcActualIndex(
 		unsigned p_idx_v1, unsigned p_idx_v2) const {
 	unsigned index;
 
